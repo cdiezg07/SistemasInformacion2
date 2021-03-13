@@ -37,7 +37,6 @@ public class TrabajadorbbddDAO {
             String consultaHQL = "FROM Trabajadorbbdd n WHERE n.nifnie=:param1";
             Query query = sesion.createQuery(consultaHQL).setParameter("param1", dni);
             List<Trabajadorbbdd> ListaResultado = query.list();
-            HibernateUtil.shutdown();
             
             for (Trabajadorbbdd tbd : ListaResultado) {
                 tbd1 = tbd;

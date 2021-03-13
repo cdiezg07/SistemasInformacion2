@@ -1,9 +1,11 @@
 
 import java.util.*;
+import modelo.HibernateUtil;
 import modelo.Nomina;
 import modelo.NominaDAO;
 import modelo.Trabajadorbbdd;
 import modelo.TrabajadorbbddDAO;
+import org.hibernate.Hibernate;
         /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -45,6 +47,8 @@ public class SistemasInformacion2 {
             cont++;
         }
         System.out.println("---------------------------------");
+        
+        HibernateUtil.shutdown();
     }
 
 }

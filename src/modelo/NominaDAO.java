@@ -36,7 +36,6 @@ public class NominaDAO {
             Query query = sesion.createQuery(consultaHQL).setParameter("param1", idTrabajador);
             ListaNomina = query.list();
 
-            HibernateUtil.shutdown();
             
         } catch (Exception e) {
             System.out.println(e.getMessage());
