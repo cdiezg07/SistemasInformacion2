@@ -16,6 +16,7 @@ import modelo.Nomina;
 import modelo.NominaDAO;
 import modelo.Trabajadorbbdd;
 import modelo.TrabajadorbbddDAO;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -42,5 +43,23 @@ public class NominaDAO {
         }
 
         return ListaNomina;
+    }
+    
+    public void eliminarNominas(int idTrabajador){
+        try {
+            sf = HibernateUtil.getSessionFactory();
+            sesion = sf.openSession();
+            
+            Transaction t = sesion.beginTransaction();
+            
+            String consultaHQL = "DELETE FROM Nomina WHERE trabajadorbbdd.idTrabajador=:param1";
+            Query query = sesion.createQuery(consultaHQL).setParameter("param1", idTrabajador);
+            query.executeUpdate();
+            
+            t.commit();
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

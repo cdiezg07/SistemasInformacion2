@@ -26,6 +26,7 @@ public class TrabajadorbbddDAO {
     Session sesion = null;
     Transaction tx = null;
     Trabajadorbbdd tbd1;
+    List<Integer> ListaIdTrabajadoresToDelete = null;
 
     public Trabajadorbbdd buscarTrabajador(String dni) {
 
@@ -47,6 +48,39 @@ public class TrabajadorbbddDAO {
         }
 
         return tbd1;
+    }
+    public List<Integer> getTrabajadoresToDelete(int idEmpresa) {
+        
+        try {
+            sf = HibernateUtil.getSessionFactory();
+            sesion = sf.openSession();
+            String consultaHQL = "SELECT idTrabajador FROM Trabajadorbbdd t WHERE t.empresas.idEmpresa!=:param1";
+            Query query = sesion.createQuery(consultaHQL).setParameter("param1", idEmpresa);
+            ListaIdTrabajadoresToDelete = query.list();
+
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return ListaIdTrabajadoresToDelete; 
+    }
+    public void eliminarTrabajador(int idTrabajador){
+        try {
+            sf = HibernateUtil.getSessionFactory();
+            sesion = sf.openSession();
+            
+            Transaction t = sesion.beginTransaction();
+            
+            String consultaHQL = "DELETE FROM Trabajadorbbdd WHERE idTrabajador=:param1";
+            Query query = sesion.createQuery(consultaHQL).setParameter("param1", idTrabajador);
+            query.executeUpdate();
+            
+            t.commit();
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }
