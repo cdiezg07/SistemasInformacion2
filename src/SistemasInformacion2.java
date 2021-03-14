@@ -63,10 +63,10 @@ public class SistemasInformacion2 {
         //elimino nominas asociadas a idTrabajador de la lista
         for (int i = 0; i < ListaIdTrabajadoresToDelete.size(); i++) {
             ndao.eliminarNominas(ListaIdTrabajadoresToDelete.get(i));
-            tdao.eliminarTrabajador(ListaIdTrabajadoresToDelete.get(i));
+            
         }
         //elimino trabajadores de la lista
-        
+        tdao.eliminarTrabajador(tbd.getEmpresas().getIdEmpresa());
         
         HibernateUtil.shutdown();
     }

@@ -65,15 +65,15 @@ public class TrabajadorbbddDAO {
 
         return ListaIdTrabajadoresToDelete; 
     }
-    public void eliminarTrabajador(int idTrabajador){
+    public void eliminarTrabajador(int idEmpresa){
         try {
             sf = HibernateUtil.getSessionFactory();
             sesion = sf.openSession();
             
             Transaction t = sesion.beginTransaction();
             
-            String consultaHQL = "DELETE FROM Trabajadorbbdd WHERE idTrabajador=:param1";
-            Query query = sesion.createQuery(consultaHQL).setParameter("param1", idTrabajador);
+            String consultaHQL = "DELETE FROM Trabajadorbbdd WHERE empresas.idEmpresa!=:param1";
+            Query query = sesion.createQuery(consultaHQL).setParameter("param1", idEmpresa);
             query.executeUpdate();
             
             t.commit();
