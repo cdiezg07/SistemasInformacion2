@@ -1,5 +1,7 @@
 
 import java.util.*;
+import modelo.Empresas;
+import modelo.EmpresasDAO;
 import modelo.HibernateUtil;
 import modelo.Nomina;
 import modelo.NominaDAO;
@@ -47,8 +49,29 @@ public class SistemasInformacion2 {
             cont++;
         }
         System.out.println("---------------------------------");
+        //////////////////////////////
+        // EJERCICIO 2
+        //////////////////////////////
+        //Cargo la lista de Empresas
+        System.out.println("Nombres de las Empresas:");
+        EmpresasDAO edao = new EmpresasDAO();
+        List<Empresas> ListaEmpresas = edao.getEmpresas();
+        for (Empresas e : ListaEmpresas) {
+
+            System.out.println(e.getNombre());
+        }
+        //Actualizo los datos de las empresas
+        edao.editarEmpresas2021(tbd.getEmpresas().getIdEmpresa());
+        //muestro los nombres actualizados
+        EmpresasDAO edao1 = new EmpresasDAO();
+        ListaEmpresas = edao1.getEmpresas();
+        System.out.println("Nombres de las Empresas actualizados:");
+        for (Empresas e : ListaEmpresas) {
+
+            System.out.println(e.getNombre());
+        }
         
-        
+        System.out.println("---------------------------------");
         //////////////////////////////
         // EJERCICIO 3
         //////////////////////////////
