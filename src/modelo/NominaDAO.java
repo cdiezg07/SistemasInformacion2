@@ -52,7 +52,7 @@ public class NominaDAO {
             
             Transaction t = sesion.beginTransaction();
             
-            String consultaHQL = "DELETE FROM Nomina WHERE trabajadorbbdd.idTrabajador=:param1";
+            String consultaHQL = "DELETE Nomina n WHERE n.trabajadorbbdd.idTrabajador=:param1";
             Query query = sesion.createQuery(consultaHQL).setParameter("param1", idTrabajador);
             query.executeUpdate();
             

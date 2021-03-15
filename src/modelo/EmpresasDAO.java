@@ -25,23 +25,25 @@ public class EmpresasDAO {
     Session sesion = null;
     List<Empresas> ListaEmpresas = null;
     List<String> ListaEmpresasNombre = null;
-    public List<String> getEmpresas() {
+    
+    public List<Empresas> getEmpresas() {
 
         try {
             sf = HibernateUtil.getSessionFactory();
             sesion = sf.openSession();
             String consultaHQL = "select Nombre from Empresas";
             Query query = sesion.createQuery(consultaHQL);
-            ListaEmpresasNombre = query.list();
+            ListaEmpresas = query.list();
             
             
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
-        return ListaEmpresasNombre;
+        return ListaEmpresas;
     }
-     public void editarEmpresas2021(int Id){
+    
+    public void editarEmpresas2021(int Id){
         try {
             sf = HibernateUtil.getSessionFactory();
             sesion = sf.openSession();

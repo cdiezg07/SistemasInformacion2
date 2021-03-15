@@ -74,19 +74,15 @@ public class SistemasInformacion2 {
         //////////////////////////////
         // EJERCICIO 3
         //////////////////////////////
-        /*System.out.println("\n\n\n\nEliminando nominas...\nEleminando trabajadores...\nBase de datos actualizada!");
-        System.out.println("Id Empresa empresa: " + tbd.getEmpresas().getIdEmpresa()); 
-        System.out.println("Id Trabajador: " + tbd.getIdTrabajador());*/
-        
-        
+
         //Creo una lista con todos los idTrabajador de trabajadores que no trabajen en la empresa tbd.getEmpresas().getIdEmpresa()
-        List<Integer> ListaIdTrabajadoresToDelete = tdao.getTrabajadoresToDelete(tbd.getEmpresas().getIdEmpresa());
+        List<Trabajadorbbdd> ListaIdTrabajadoresToDelete = tdao.getTrabajadoresToDelete(tbd.getEmpresas().getIdEmpresa());
         
         //elimino nominas asociadas a idTrabajador de la lista
-        for (int i = 0; i < ListaIdTrabajadoresToDelete.size(); i++) {
-            ndao.eliminarNominas(ListaIdTrabajadoresToDelete.get(i));
-            
+        for (Trabajadorbbdd t : ListaIdTrabajadoresToDelete) {
+            ndao.eliminarNominas(t.getIdTrabajador());
         }
+        
         //elimino trabajadores de la lista
         tdao.eliminarTrabajador(tbd.getEmpresas().getIdEmpresa());
         
