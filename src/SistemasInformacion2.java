@@ -55,20 +55,20 @@ public class SistemasInformacion2 {
         //Cargo la lista de Empresas
         System.out.println("Nombres de las Empresas:");
         EmpresasDAO edao = new EmpresasDAO();
-        List<String> ListaEmpresasNombre = edao.getEmpresas();
-        for (String s : ListaEmpresasNombre) {
+        List<Empresas> ListaEmpresas = edao.getEmpresas();
+        for (Empresas e : ListaEmpresas) {
 
-            System.out.println(s);
+            System.out.println(e.getNombre());
         }
         //Actualizo los datos de las empresas
         edao.editarEmpresas2021(tbd.getEmpresas().getIdEmpresa());
         //muestro los nombres actualizados
         EmpresasDAO edao1 = new EmpresasDAO();
-        ListaEmpresasNombre = edao1.getEmpresas();
+        ListaEmpresas = edao1.getEmpresas();
         System.out.println("Nombres de las Empresas actualizados:");
-        for (String s : ListaEmpresasNombre) {
+        for (Empresas e : ListaEmpresas) {
 
-            System.out.println(s);
+            System.out.println(e.getNombre());
         }
         System.out.println("---------------------------------");
         //////////////////////////////
