@@ -3,12 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/hibernate.reveng.xml</file>
-            <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/modelo/Categorias.hbm.xml</file>
+            <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/modelo/HibernateUtil.java</file>
             <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/modelo/NominaDAO.java</file>
+            <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/modelo/EmpresasDAO.java</file>
             <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/SistemasInformacion2.java</file>
             <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/modelo/TrabajadorbbddDAO.java</file>
-            <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/hibernate.cfg.xml</file>
+            <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/modelo/Empresas.java</file>
+            <file>file:/C:/Users/carlos/Documents/NetBeansProjects/SistemasInformacion2/src/modelo/Trabajadorbbdd.java</file>
         </group>
     </open-files>
 </project-private>

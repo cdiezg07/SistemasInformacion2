@@ -6,11 +6,6 @@
 package modelo;
 
 import java.util.*;
-import modelo.Categorias;
-import modelo.HibernateUtil;
-import modelo.Nomina;
-import modelo.Trabajadorbbdd;
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,43 +16,43 @@ import org.hibernate.Transaction;
  * @author maral
  */
 public class EmpresasDAO {
+
     SessionFactory sf = null;
     Session sesion = null;
     List<Empresas> ListaEmpresas = null;
     List<String> ListaEmpresasNombre = null;
-    
-    public List<Empresas> getEmpresas() {
+
+    public List<Empresas> getEmpresas(int IdEmpresa) {
 
         try {
             sf = HibernateUtil.getSessionFactory();
             sesion = sf.openSession();
-            String consultaHQL = "select Nombre from Empresas";
-            Query query = sesion.createQuery(consultaHQL);
+            String consultaHQL = "from Empresas e WHERE e.idEmpresa!=:param1";
+            Query query = sesion.createQuery(consultaHQL).setParameter("param1", IdEmpresa);
             ListaEmpresas = query.list();
-            
-            
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
         return ListaEmpresas;
     }
-    
-    public void editarEmpresas2021(int Id){
+
+    public void editarEmpresas2021(List<Empresas> ListaEmpresas) {
         try {
             sf = HibernateUtil.getSessionFactory();
             sesion = sf.openSession();
-            
-            Transaction t = sesion.beginTransaction();
-            
-            String consultaHQL = "UPDATE Empresas SET Nombre = CONCAT(Nombre, '2021') where (IdEmpresa!=:param1);";
-            Query query = sesion.createQuery(consultaHQL).setParameter("param1", Id);
-            query.executeUpdate();
-            
-            t.commit();
-            
+            for (Empresas le : ListaEmpresas) {
+                Transaction t = sesion.beginTransaction();
+                Empresas emp = (Empresas) sesion.load(Empresas.class, le.getIdEmpresa());
+                emp.setNombre(emp.getNombre() + "2021");
+                sesion.saveOrUpdate(emp);
+                t.commit();
+            }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
+
 }

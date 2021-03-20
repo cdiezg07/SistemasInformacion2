@@ -6,11 +6,6 @@
 package modelo;
 
 import java.util.*;
-import modelo.Categorias;
-import modelo.HibernateUtil;
-import modelo.Nomina;
-import modelo.Trabajadorbbdd;
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
