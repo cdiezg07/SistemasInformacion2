@@ -7,14 +7,17 @@ package modelo;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -38,7 +41,7 @@ public class AccesoExcel {
         // Create a DataFormatter to format and get each cell's value as String
         DataFormatter dataFormatter = new DataFormatter();
         HashMap<String, int[]> categoria = new HashMap<String, int[]>();
-        
+
         // 1. You can obtain a rowIterator and columnIterator and iterate over them
         System.out.println("\n\nIterating over Rows and Columns using Iterator\n");
         Iterator<Row> rowIterator = sheet.rowIterator();
@@ -53,28 +56,28 @@ public class AccesoExcel {
 //            while (cellIterator.hasNext()) {
             int[] salarios = new int[2];
             String cate = "";
-            for(int i=0; i<3; i++){
-               Cell cell = cellIterator.next();
+            for (int i = 0; i < 3; i++) {
+
+                Cell cell = cellIterator.next();
                 String cellValue = dataFormatter.formatCellValue(cell);
-                if(i==0){
+                if (i == 0) {
                     cate = cellValue;
-                }else{
-                    salarios[i-1] = Integer.parseInt(cellValue);
-                   
+                } else {
+                    salarios[i - 1] = Integer.parseInt(cellValue);
+
                 }
-                System.out.print(cellValue + "\t"); 
+                System.out.print(cellValue + "\t");
             }
             categoria.put(cate, salarios);
 
-            for(int i=0; i<2; i++){
+            for (int i = 0; i < 2; i++) {
                 Cell cell = cellIterator.next();
                 String cellValue = dataFormatter.formatCellValue(cell);
-                categoria.put(cellValue, new )
+                //  categoria.put(cellValue, new )
                 System.out.print(cellValue + "\t");
             }
-                
-//            }
 
+//            }
             System.out.println();
         }
 
@@ -109,6 +112,74 @@ public class AccesoExcel {
 //
 //        workbook.close();
 //        inputStream.close();
+    }
+
+    public ArrayList<Trabajadorbbdd> accesoHoja3() throws FileNotFoundException, IOException {
+        String excelFilePath = "./resources/SistemasInformacionII.xlsx";
+        FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
+
+        Workbook workbook = WorkbookFactory.create(new File(excelFilePath));
+       // workbook.setMissingCellPolicy(MissingCellPolicy.RETURN_BLANK_AS_NULL);
+
+        System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+
+        Sheet sheet = workbook.getSheetAt(2);
+
+        // Create a DataFormatter to format and get each cell's value as String
+        DataFormatter fmt = new DataFormatter();
+
+        ArrayList<Trabajadorbbdd> atb = new ArrayList<Trabajadorbbdd>();
+        Trabajadorbbdd tb = null;
+        // 1. You can obtain a rowIterator and columnIterator and iterate over them
+        System.out.println("\n\nIterating over Rows and Columns using Iterator\n");
+       
+        for (int rn = 1; rn <= sheet.getLastRowNum(); rn++) {
+            Row row = sheet.getRow(rn);
+            if (row == null) {
+                // There is no data in this row, handle as needed
+            } else {
+                ArrayList<String> col = new ArrayList<String>();
+                // Row "rn" has data
+                for (int cn = 0; cn < 13; cn++) {
+                    Cell cell = row.getCell(cn);
+                    String cellStr = "";
+                    if (cell == null || cell.getCellType() == CellType.BLANK) {
+                        // This cell is empty/blank/un-used, handle as needed
+                        col.add(cellStr);
+                        System.out.print(cellStr + "\t");
+                    } else {
+                        cellStr = fmt.formatCellValue(cell);
+                        col.add(cellStr);
+                        System.out.print(cellStr + "\t");
+
+                    }
+                   
+                    
+                } 
+                tb = new Trabajadorbbdd();
+                tb.setEmpresas(new Empresas(col.get(0), col.get(1)));
+                    tb.setNombre(col.get(6));
+                    tb.setApellido1(col.get(4));
+                    tb.setApellido2(col.get(5));
+                    tb.setEmail(col.get(12));
+                    tb.setNifnie(col.get(7));
+                    tb.setCodigoCuenta(col.get(9));
+                    tb.setIban(col.get(10));
+                atb.add(tb);
+            }
+
+            System.out.println();
+        }
+
+        workbook.close();
+        inputStream.close();
+
+        return atb;
+    }
+    
+    
+    public void cargarNuevosDatos(){
+        
     }
 
 }
