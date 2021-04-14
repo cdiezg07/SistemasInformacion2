@@ -33,6 +33,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class AccesoExcel {
 
+    ArrayList<String> prorrataExtra = new ArrayList<String>();
+    ArrayList<Integer> rowNull = new ArrayList<Integer>();
+
     public void acceso() throws IOException {
         String excelFilePath = "./resources/SistemasInformacionII.xlsx";
         FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
@@ -121,7 +124,7 @@ public class AccesoExcel {
     public ArrayList<Trabajadorbbdd> accesoHoja3() throws FileNotFoundException, IOException, ParseException {
         String excelFilePath = "./resources/SistemasInformacionII.xlsx";
         FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
-        SimpleDateFormat formatter1=new SimpleDateFormat("dd/MM/yyyy");  
+        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
 
         Workbook workbook = WorkbookFactory.create(new File(excelFilePath));
         // workbook.setMissingCellPolicy(MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -140,43 +143,46 @@ public class AccesoExcel {
 
         for (int rn = 1; rn <= sheet.getLastRowNum(); rn++) {
             Row row = sheet.getRow(rn);
-            if (row == null) {
-                // There is no data in this row, handle as needed
-            } else {
-                ArrayList<String> col = new ArrayList<String>();
-                // Row "rn" has data
-                for (int cn = 0; cn < 13; cn++) {
-                    Cell cell = row.getCell(cn);
-                    String cellStr = "";
-                    if (cell == null || cell.getCellType() == CellType.BLANK) {
-                        // This cell is empty/blank/un-used, handle as needed
-                        col.add(cellStr);
-                        System.out.print(cellStr + "\t");
-                    } else {
-                        cellStr = fmt.formatCellValue(cell);
-                        col.add(cellStr);
-                        System.out.print(cellStr + "\t");
 
-                    }
-
+            ArrayList<String> col = new ArrayList<String>();
+            Categorias c = new Categorias();
+            // Row "rn" has data
+            for (int cn = 0; cn < 13; cn++) {
+                Cell cell = row.getCell(cn);
+                String cellStr = "";
+                if (cell == null || cell.getCellType() == CellType.BLANK) {
+                    // This cell is empty/blank/un-used, handle as needed
+                    col.add(cellStr);
+                    System.out.print(cellStr + "\t");
+                } else {
+                    cellStr = fmt.formatCellValue(cell);
+                    col.add(cellStr);
+                    System.out.print(cellStr + "\t");
                 }
-                
-                if(!col.get(0).equals("")){
-                    tb = new Trabajadorbbdd();
+            }
+
+            if (col.get(0).equals("")) {
+                rowNull.add(0);
+            } else {
+                rowNull.add(1);
+
+                tb = new Trabajadorbbdd();
                 tb.setEmpresas(new Empresas(col.get(0), col.get(1)));
-                //tb.setCategorias((new Categorias()).setNombreCategoria(col.get(2)));
+
+                c.setNombreCategoria(col.get(2));
+                tb.setCategorias(c);
+
                 tb.setFechaAlta(formatter1.parse(col.get(3)));
-                System.out.println(new SimpleDateFormat("dd/MM/yyyy").parse(col.get(3))+"--------------------------------------------------------");
+                System.out.println(new SimpleDateFormat("dd/MM/yyyy").parse(col.get(3)) + "--------------------------------------------------------");
                 tb.setNombre(col.get(6));
                 tb.setApellido1(col.get(4));
                 tb.setApellido2(col.get(5));
                 tb.setEmail(col.get(12));
                 tb.setNifnie(col.get(7));
+                prorrataExtra.add(col.get(8));
                 tb.setCodigoCuenta(col.get(9));
                 tb.setIban(col.get(10));
                 atb.add(tb);
-                }
-                
             }
 
             System.out.println();
@@ -201,23 +207,43 @@ public class AccesoExcel {
         // Create a Row
         Row headerRow = sheet.createRow(0);
 
-        int rowNum = 1;
-        for (int i = 0; i < atb.size(); i++) {
-            Row row = sheet.createRow(rowNum++);
-            if (!atb.get(i).getNombre().equals("")) {
-                row.createCell(0).setCellValue(atb.get(i).getEmpresas().getNombre());
-                row.createCell(1).setCellValue(atb.get(i).getEmpresas().getCif());
-                //row.createCell(2).setCellValue(atb.get(i).getCategorias().getNombreCategoria());
-               row.createCell(3).setCellValue(new SimpleDateFormat("dd/MM/yyyy").format(atb.get(i).getFechaAlta()));
-               System.out.println(atb.get(i).getFechaAlta().toString());
-               row.createCell(4).setCellValue(atb.get(i).getApellido1());
-               row.createCell(5).setCellValue(atb.get(i).getApellido2());
-               row.createCell(6).setCellValue(atb.get(i).getNombre());
-               row.createCell(7).setCellValue(atb.get(i).getNifnie());
-               row.createCell(8).setCellValue(atb.get(i).getNifnie());
-               row.createCell(9).setCellValue(atb.get(i).getCodigoCuenta());
-               row.createCell(10).setCellValue(atb.get(i).getIban());
-               row.createCell(11).setCellValue(atb.get(i).getEmail());
+        int rowNum = 0;
+        Row row = sheet.createRow(rowNum++);
+        row.createCell(0).setCellValue("Nombre empresa");
+        row.createCell(1).setCellValue("Cif empresa");
+        row.createCell(2).setCellValue("Categoria");
+        row.createCell(3).setCellValue("FechaAltaEmpresa");
+        row.createCell(4).setCellValue("Apellido1");
+        row.createCell(5).setCellValue("Apellido2");
+        row.createCell(6).setCellValue("Nombre");
+        row.createCell(7).setCellValue("NIF/NIE");
+        row.createCell(8).setCellValue("ProrrataExtra");
+        row.createCell(9).setCellValue("CodigoCuenta");
+        row.createCell(10).setCellValue("Pais Origen Cuenta Bancaria");
+        row.createCell(11).setCellValue("IBAN");
+        row.createCell(12).setCellValue("Email");
+
+        int x= 0;
+        for (int i = 0; i < rowNull.size(); i++) {
+            row = sheet.createRow(rowNum++);
+            
+            if (rowNull.get(i) == 1) {
+                row.createCell(0).setCellValue(atb.get(i-x).getEmpresas().getNombre());
+                row.createCell(1).setCellValue(atb.get(i-x).getEmpresas().getCif());
+                row.createCell(2).setCellValue(atb.get(i-x).getCategorias().getNombreCategoria());
+                row.createCell(3).setCellValue(new SimpleDateFormat("dd/MM/yyyy").format(atb.get(i-x).getFechaAlta()));
+                //System.out.println(atb.get(i).getFechaAlta().toString());
+                row.createCell(4).setCellValue(atb.get(i-x).getApellido1());
+                row.createCell(5).setCellValue(atb.get(i-x).getApellido2());
+                row.createCell(6).setCellValue(atb.get(i-x).getNombre());
+                row.createCell(7).setCellValue(atb.get(i-x).getNifnie());
+                row.createCell(8).setCellValue(prorrataExtra.get(i-x));
+                row.createCell(9).setCellValue(atb.get(i-x).getCodigoCuenta());
+                row.createCell(10).setCellValue(atb.get(i-x).getIban().substring(0, 2));
+                row.createCell(11).setCellValue(atb.get(i-x).getIban());
+                row.createCell(12).setCellValue(atb.get(i-x).getEmail());
+            } else {
+                x++;
             }
 
         }
