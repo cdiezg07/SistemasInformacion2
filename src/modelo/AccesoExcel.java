@@ -8,11 +8,15 @@ package modelo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -114,12 +118,13 @@ public class AccesoExcel {
 //        inputStream.close();
     }
 
-    public ArrayList<Trabajadorbbdd> accesoHoja3() throws FileNotFoundException, IOException {
+    public ArrayList<Trabajadorbbdd> accesoHoja3() throws FileNotFoundException, IOException, ParseException {
         String excelFilePath = "./resources/SistemasInformacionII.xlsx";
         FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
+        SimpleDateFormat formatter1=new SimpleDateFormat("dd/MM/yyyy");  
 
         Workbook workbook = WorkbookFactory.create(new File(excelFilePath));
-       // workbook.setMissingCellPolicy(MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        // workbook.setMissingCellPolicy(MissingCellPolicy.RETURN_BLANK_AS_NULL);
 
         System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
 
@@ -132,7 +137,7 @@ public class AccesoExcel {
         Trabajadorbbdd tb = null;
         // 1. You can obtain a rowIterator and columnIterator and iterate over them
         System.out.println("\n\nIterating over Rows and Columns using Iterator\n");
-       
+
         for (int rn = 1; rn <= sheet.getLastRowNum(); rn++) {
             Row row = sheet.getRow(rn);
             if (row == null) {
@@ -153,19 +158,25 @@ public class AccesoExcel {
                         System.out.print(cellStr + "\t");
 
                     }
-                   
-                    
-                } 
-                tb = new Trabajadorbbdd();
+
+                }
+                
+                if(!col.get(0).equals("")){
+                    tb = new Trabajadorbbdd();
                 tb.setEmpresas(new Empresas(col.get(0), col.get(1)));
-                    tb.setNombre(col.get(6));
-                    tb.setApellido1(col.get(4));
-                    tb.setApellido2(col.get(5));
-                    tb.setEmail(col.get(12));
-                    tb.setNifnie(col.get(7));
-                    tb.setCodigoCuenta(col.get(9));
-                    tb.setIban(col.get(10));
+                //tb.setCategorias((new Categorias()).setNombreCategoria(col.get(2)));
+                tb.setFechaAlta(formatter1.parse(col.get(3)));
+                System.out.println(new SimpleDateFormat("dd/MM/yyyy").parse(col.get(3))+"--------------------------------------------------------");
+                tb.setNombre(col.get(6));
+                tb.setApellido1(col.get(4));
+                tb.setApellido2(col.get(5));
+                tb.setEmail(col.get(12));
+                tb.setNifnie(col.get(7));
+                tb.setCodigoCuenta(col.get(9));
+                tb.setIban(col.get(10));
                 atb.add(tb);
+                }
+                
             }
 
             System.out.println();
@@ -176,10 +187,53 @@ public class AccesoExcel {
 
         return atb;
     }
-    
-    
-    public void cargarNuevosDatos(){
-        
+
+    public void cargarNuevosDatos(ArrayList<Trabajadorbbdd> atb) throws IOException {
+        Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
+
+        /* CreationHelper helps us create instances of various things like DataFormat, 
+           Hyperlink, RichTextString etc, in a format (HSSF, XSSF) independent way */
+        CreationHelper createHelper = workbook.getCreationHelper();
+
+        // Create a Sheet
+        Sheet sheet = workbook.createSheet("Hoja 3");
+
+        // Create a Row
+        Row headerRow = sheet.createRow(0);
+
+        int rowNum = 1;
+        for (int i = 0; i < atb.size(); i++) {
+            Row row = sheet.createRow(rowNum++);
+            if (!atb.get(i).getNombre().equals("")) {
+                row.createCell(0).setCellValue(atb.get(i).getEmpresas().getNombre());
+                row.createCell(1).setCellValue(atb.get(i).getEmpresas().getCif());
+                //row.createCell(2).setCellValue(atb.get(i).getCategorias().getNombreCategoria());
+               row.createCell(3).setCellValue(new SimpleDateFormat("dd/MM/yyyy").format(atb.get(i).getFechaAlta()));
+               System.out.println(atb.get(i).getFechaAlta().toString());
+               row.createCell(4).setCellValue(atb.get(i).getApellido1());
+               row.createCell(5).setCellValue(atb.get(i).getApellido2());
+               row.createCell(6).setCellValue(atb.get(i).getNombre());
+               row.createCell(7).setCellValue(atb.get(i).getNifnie());
+               row.createCell(8).setCellValue(atb.get(i).getNifnie());
+               row.createCell(9).setCellValue(atb.get(i).getCodigoCuenta());
+               row.createCell(10).setCellValue(atb.get(i).getIban());
+               row.createCell(11).setCellValue(atb.get(i).getEmail());
+            }
+
+        }
+
+        // Resize all columns to fit the content size
+        for (int i = 0; i < atb.size(); i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Write the output to a file
+        FileOutputStream fileOut = new FileOutputStream("./resources/Nuevo.xlsx");
+        workbook.write(fileOut);
+        fileOut.close();
+
+        // Closing the workbook
+        workbook.close();
     }
 
 }

@@ -1,6 +1,8 @@
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +14,7 @@ import modelo.Nomina;
 import modelo.NominaDAO;
 import modelo.Trabajadorbbdd;
 import modelo.TrabajadorbbddDAO;
+import modelo.XMLGenerator;
 
 /*
      * To change this license header, choose License Headers in Project Properties.
@@ -24,10 +27,12 @@ import modelo.TrabajadorbbddDAO;
 
 public class SistemasInformacion2 {
 
+    static boolean cuentaCorrecta = false;
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, ParseException {
         // TODO code application logic here
 
 //        Scanner leer = new Scanner(System.in);
@@ -94,27 +99,59 @@ public class SistemasInformacion2 {
         AccesoExcel ae = new AccesoExcel();
         try {
             // ae.acceso();
+
+            XMLGenerator xml = new XMLGenerator("Cuentas", "ErroresCCC");
+
             ArrayList<Trabajadorbbdd> atb = ae.accesoHoja3();
             modEmail(atb);
             modDni(atb);
+
+            //Modficar codigo cuenta
             String codigoCuenta = "";
             String iban = "";
-            for(int j=0; j<atb.size(); j++){
-                if(atb.get(j).getNombre()!=""){
+            String cccErroneo = "";
+            for (int j = 0; j < atb.size(); j++) {
+                if (!atb.get(j).getNombre().equals("")) {
+                    cccErroneo = atb.get(j).getCodigoCuenta();
                     codigoCuenta = ccc(atb.get(j).getCodigoCuenta());
                     iban = iban(atb.get(j).getIban(), codigoCuenta);
                     atb.get(j).setIban(iban);
                     atb.get(j).setCodigoCuenta(codigoCuenta);
+                  
+                    if (!cuentaCorrecta) {
+                        ArrayList<String> key = new ArrayList<String>();
+                        ArrayList<String> valor = new ArrayList<String>();
+                        key.add("Nombre");
+                        key.add("Apellidos");
+                        key.add("Empresa");
+                        key.add("CCCErroneo");
+                        key.add("IBANCorrecto");
+
+                        valor.add(atb.get(j).getNombre());
+                        valor.add(atb.get(j).getApellido1() + " " + atb.get(j).getApellido2());
+                        valor.add(atb.get(j).getEmpresas().getNombre());
+                        valor.add(cccErroneo);
+                        valor.add(atb.get(j).getIban());
+
+                        xml.addItem("Cuenta", key, valor);
+                    }
+
                 }
             }
+            xml.generate();
+
             for (int i = 0; i < atb.size(); i++) {
                 Trabajadorbbdd tbd = atb.get(i);
                 System.out.println(tbd.getNombre() + ", " + tbd.getApellido1() + ", " + tbd.getApellido2() + ", " + tbd.getEmpresas().getNombre() + ", " + tbd.getEmail() + ", " + tbd.getNifnie()
-                +", "+tbd.getCodigoCuenta()+", "+tbd.getIban());
+                        + ", " + tbd.getCodigoCuenta() + ", " + tbd.getIban());
 
             }
 
+            ae.cargarNuevosDatos(atb);
+
         } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
 
@@ -124,7 +161,7 @@ public class SistemasInformacion2 {
         char letras[] = {'T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E'};
 
         for (int j = 0; j < atb.size(); j++) {
-            if (atb.get(j).getNifnie() != "") {
+            if (!atb.get(j).getNifnie().equals("")) {
 
                 String cadena = atb.get(j).getNifnie();
                 char cad[];
@@ -158,87 +195,93 @@ public class SistemasInformacion2 {
         }
 
     }
-    public static String iban(String pais, String ccc){
+
+    public static String iban(String pais, String ccc) {
         int[] valorNumerico = new int[2];
         valorNumerico[0] = valorNumerico(pais.charAt(0));
         valorNumerico[1] = valorNumerico(pais.charAt(1));
-        
+
         String cadena = ccc + valorNumerico[0] + valorNumerico[1] + "00";
         BigInteger cadenaAux = new BigInteger(cadena);
-        
+
         BigInteger resto;
         resto = cadenaAux.remainder(new BigInteger("97"));
-        
+
         int digito = 98 - resto.intValue();
-        
-        if(digito < 10)
+
+        if (digito < 10) {
             return pais + "0" + String.valueOf(digito) + ccc;
-        else 
+        } else {
             return pais + String.valueOf(digito) + ccc;
+        }
     }
-    
-    public static String ccc(String ccc){
+
+    public static String ccc(String ccc) {
 
         int[] entidadOficina = new int[8];
         int[] dControl = new int[2];
         int[] id = new int[10];
         int suma = 0;
-        
+
         //relleno los arrays para operar con ellos
-        for(int i = 0; i < entidadOficina.length; i++){
+        for (int i = 0; i < entidadOficina.length; i++) {
             entidadOficina[i] = Character.getNumericValue(ccc.charAt(i));
         }
-        for(int i = 0; i < dControl.length; i++){
-            dControl[i] = Character.getNumericValue(ccc.charAt(i+entidadOficina.length));
+        for (int i = 0; i < dControl.length; i++) {
+            dControl[i] = Character.getNumericValue(ccc.charAt(i + entidadOficina.length));
         }
-        for(int i = 0; i < id.length; i++){
-            id[i] = Character.getNumericValue(ccc.charAt(i+entidadOficina.length+dControl.length));
+        for (int i = 0; i < id.length; i++) {
+            id[i] = Character.getNumericValue(ccc.charAt(i + entidadOficina.length + dControl.length));
         }
 
         //calculo el digito 1
-        int[] dControlAux = new int [2];
+        int[] dControlAux = new int[2];
         String digitoControl = "00";
-        for(int i = 0; i<entidadOficina.length; i++){
+        for (int i = 0; i < entidadOficina.length; i++) {
             digitoControl += entidadOficina[i];
         }
         dControlAux[0] = calculadoraCCC(digitoControl);
-        
+
         //calculo el digito 2
         digitoControl = "";
-        for(int i = 0; i<id.length; i++){
+        for (int i = 0; i < id.length; i++) {
             digitoControl += id[i];
         }
         dControlAux[1] = calculadoraCCC(digitoControl);
-        
+
         //creo el ccc auxiliar
         String cccAux = "";
-        for(int i = 0; i < entidadOficina.length; i++){
+        for (int i = 0; i < entidadOficina.length; i++) {
             cccAux += entidadOficina[i];
         }
-        for(int i = 0; i < dControlAux.length; i++){
+        for (int i = 0; i < dControlAux.length; i++) {
             cccAux += dControlAux[i];
         }
-        for(int i = 0; i < id.length; i++){
-           cccAux += id[i];
+        for (int i = 0; i < id.length; i++) {
+            cccAux += id[i];
         }
-        
+
         //Devuelvo el ccc correcto
-        if(dControl[0] == dControlAux[0] && dControl[1] == dControlAux[1])
+        if (dControl[0] == dControlAux[0] && dControl[1] == dControlAux[1]) {
+            System.err.println("hahdfaksdf");
+            cuentaCorrecta = true;
             return ccc;
-        else
+        } else {
+            cuentaCorrecta = false;
             return cccAux;
+        }
     }
-    
-    public static int calculadoraCCC(String digitoControl){
+
+    public static int calculadoraCCC(String digitoControl) {
         int[] factores = {1, 2, 4, 8, 5, 10, 9, 7, 3, 6};
         int suma = 0;
-        for(int i = 0; i < factores.length; i++){
-            suma += Character.getNumericValue(digitoControl.charAt(i))*factores[i];  
+        for (int i = 0; i < factores.length; i++) {
+            suma += Character.getNumericValue(digitoControl.charAt(i)) * factores[i];
         }
-        
-        int resto = suma%11;
-        int digito = 11-resto;
-        
+
+        int resto = suma % 11;
+        int digito = 11 - resto;
+
         switch (digito) {
             case 11:
                 return 0;
@@ -248,8 +291,8 @@ public class SistemasInformacion2 {
                 return digito;
         }
     }
-    
-    public static int valorNumerico(char i){
+
+    public static int valorNumerico(char i) {
         switch (i) {
             case 'A':
                 return 10;
@@ -317,7 +360,7 @@ public class SistemasInformacion2 {
             boolean incrmentado = false;
             Trabajadorbbdd tbd = atb.get(i);
 
-            if (tbd.getNombre() != "") {
+            if (!tbd.getNombre().equals("")) {
                 email = tbd.getNombre().substring(0, 1) + tbd.getApellido1().substring(0, 1);
                 if (tbd.getApellido2() != "") {
                     email += tbd.getApellido2().substring(0, 1);
