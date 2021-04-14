@@ -1,3 +1,6 @@
 /dist/
 *.class
 *.properties
+*.xml
+*.xlsx
+
