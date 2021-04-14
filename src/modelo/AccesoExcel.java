@@ -208,6 +208,7 @@ public class AccesoExcel {
                 prorrataExtra.add(col.get(8));
                 tb.setCodigoCuenta(col.get(9));
                 tb.setIban(col.get(10));
+                tb.setIdTrabajador(Integer.parseInt(col.get(13))+1);
                 atb.add(tb);
             }
 
