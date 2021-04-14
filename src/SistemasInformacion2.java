@@ -28,6 +28,7 @@ import modelo.XMLGenerator;
 public class SistemasInformacion2 {
 
     static boolean cuentaCorrecta = false;
+    
 
     /**
      * @param args the command line arguments
@@ -100,12 +101,12 @@ public class SistemasInformacion2 {
         try {
             // ae.acceso();
 
-            XMLGenerator xml = new XMLGenerator("Cuentas", "ErroresCCC");
-
+            
+            
             ArrayList<Trabajadorbbdd> atb = ae.accesoHoja3();
             modEmail(atb);
             modDni(atb);
-
+            XMLGenerator xml = new XMLGenerator("Cuentas", "ErroresCCC");
             //Modficar codigo cuenta
             String codigoCuenta = "";
             String iban = "";
@@ -133,12 +134,13 @@ public class SistemasInformacion2 {
                         valor.add(cccErroneo);
                         valor.add(atb.get(j).getIban());
 
-                        xml.addItem("Cuenta", key, valor);
+                        xml.addItem("Cuenta", key, valor,atb.get(j).getIdTrabajador()+"");
                     }
 
                 }
             }
             xml.generate();
+            
 
             for (int i = 0; i < atb.size(); i++) {
                 Trabajadorbbdd tbd = atb.get(i);
@@ -157,12 +159,12 @@ public class SistemasInformacion2 {
 
     }
 
-    private static void modDni(ArrayList<Trabajadorbbdd> atb) {
+    private static void modDni(ArrayList<Trabajadorbbdd> atb) throws Exception {
         char letras[] = {'T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E'};
-
+        XMLGenerator xmlDNI = new XMLGenerator("Trabajadores", "Errores");
+        ArrayList<String> DNI=new ArrayList<String>();
         for (int j = 0; j < atb.size(); j++) {
             if (!atb.get(j).getNifnie().equals("")) {
-
                 String cadena = atb.get(j).getNifnie();
                 char cad[];
                 cad = cadena.toCharArray();
@@ -182,18 +184,64 @@ public class SistemasInformacion2 {
                     s += cad[i];
                 }
                 int index = Integer.parseInt(s) % 23;
+                String DNIfinal=cadena;
                 if (cad[cad.length - 1] == letras[index]) {
+                    
                 } else {
                     char cad2[] = cadena.toCharArray();
                     cad2[cad2.length - 1] = letras[index];
-                    String DNIfinal = String.valueOf(cad2);
+                    DNIfinal = String.valueOf(cad2);
                     System.out.println("DNI final: " + DNIfinal);
                     atb.get(j).setNifnie(DNIfinal);
                 }
+                if(DNI.isEmpty()){
+                    DNI.add(DNIfinal);
+                }else{
+                    boolean repetido=true;
+                    for(int i=0;i<DNI.size();i++){
+                        if (DNI.get(i).equals(DNIfinal)) {
+                            ArrayList<String> key = new ArrayList<String>();
+                            ArrayList<String> valor = new ArrayList<String>();
+                            key.add("Nombre");
+                            key.add("PrimerApellido");
+                            key.add("SegundoApellido");
+                            key.add("Empresa");
+                            key.add("Categoria");
 
+                            valor.add(atb.get(j).getNombre());
+                            valor.add(atb.get(j).getApellido1());
+                            valor.add(atb.get(j).getApellido2());
+                            valor.add(atb.get(j).getEmpresas().getNombre());
+                            valor.add(atb.get(j).getCategorias().getNombreCategoria());
+
+                            xmlDNI.addItem("Cuenta", key, valor, atb.get(j).getIdTrabajador() + "");
+                            repetido=false;
+                        }
+                    }
+                    if(repetido) DNI.add(DNIfinal);
+                }
+
+            }else{
+                ArrayList<String> key = new ArrayList<String>();
+                ArrayList<String> valor = new ArrayList<String>();
+                key.add("Nombre");
+                key.add("PrimerApellido");
+                key.add("SegundoApellido");
+                key.add("Empresa");
+                key.add("Categoria");
+
+                valor.add(atb.get(j).getNombre());
+                valor.add(atb.get(j).getApellido1());
+                valor.add(atb.get(j).getApellido2());
+                valor.add(atb.get(j).getEmpresas().getNombre());
+                valor.add(atb.get(j).getCategorias().getNombreCategoria());
+
+                xmlDNI.addItem("Cuenta", key, valor, atb.get(j).getIdTrabajador() + "");
+                
             }
         }
-
+        xmlDNI.generate();
+        xmlDNI=null;
     }
 
     public static String iban(String pais, String ccc) {
