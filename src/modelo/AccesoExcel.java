@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -35,6 +36,7 @@ public class AccesoExcel {
 
     ArrayList<String> prorrataExtra = new ArrayList<String>();
     ArrayList<Integer> rowNull = new ArrayList<Integer>();
+    ArrayList<String> primeraFila = new ArrayList<String>();
 
     public void acceso() throws IOException {
         String excelFilePath = "./resources/SistemasInformacionII.xlsx";
@@ -141,27 +143,51 @@ public class AccesoExcel {
         // 1. You can obtain a rowIterator and columnIterator and iterate over them
         System.out.println("\n\nIterating over Rows and Columns using Iterator\n");
 
-        for (int rn = 1; rn <= sheet.getLastRowNum(); rn++) {
+        for (int rn = 0; rn <= sheet.getLastRowNum(); rn++) {
             Row row = sheet.getRow(rn);
 
             ArrayList<String> col = new ArrayList<String>();
+            
             Categorias c = new Categorias();
             // Row "rn" has data
-            for (int cn = 0; cn < 13; cn++) {
+            System.out.println("-------------------------------------------------------------------------------------"+row.getLastCellNum());
+            for (int cn = 0; cn < sheet.getRow(0).getLastCellNum(); cn++) {
                 Cell cell = row.getCell(cn);
                 String cellStr = "";
-                if (cell == null || cell.getCellType() == CellType.BLANK) {
+               
+                if (cell == null) {
                     // This cell is empty/blank/un-used, handle as needed
                     col.add(cellStr);
                     System.out.print(cellStr + "\t");
                 } else {
-                    cellStr = fmt.formatCellValue(cell);
-                    col.add(cellStr);
-                    System.out.print(cellStr + "\t");
+                    switch (cell.getCellType()) {
+                        case STRING:
+                                cellStr = fmt.formatCellValue(cell);
+                                col.add(cellStr);
+                                System.out.print(cellStr + "\t");
+                            break;
+                        case NUMERIC:
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                               String cellValue = formatter1.format(cell.getDateCellValue());
+                               System.out.print(cellValue + "\t");
+
+                                col.add(cellValue);
+                            }
+                            break;
+                        default:
+                            cellStr = fmt.formatCellValue(cell);
+                                col.add(cellStr);
+                                System.out.print(cellStr + "\t");
+                            break;
+                    }
                 }
             }
-
-            if (col.get(0).equals("")) {
+            //Id de la columna
+            col.add(Integer.toString(rn));
+            
+            if(rn==0){
+                primeraFila = col;
+            }else if (col.get(0).equals("")) {
                 rowNull.add(0);
             } else {
                 rowNull.add(1);
@@ -204,28 +230,17 @@ public class AccesoExcel {
         // Create a Sheet
         Sheet sheet = workbook.createSheet("Hoja 3");
 
-        // Create a Row
-        Row headerRow = sheet.createRow(0);
-
         int rowNum = 0;
         Row row = sheet.createRow(rowNum++);
-        row.createCell(0).setCellValue("Nombre empresa");
-        row.createCell(1).setCellValue("Cif empresa");
-        row.createCell(2).setCellValue("Categoria");
-        row.createCell(3).setCellValue("FechaAltaEmpresa");
-        row.createCell(4).setCellValue("Apellido1");
-        row.createCell(5).setCellValue("Apellido2");
-        row.createCell(6).setCellValue("Nombre");
-        row.createCell(7).setCellValue("NIF/NIE");
-        row.createCell(8).setCellValue("ProrrataExtra");
-        row.createCell(9).setCellValue("CodigoCuenta");
-        row.createCell(10).setCellValue("Pais Origen Cuenta Bancaria");
-        row.createCell(11).setCellValue("IBAN");
-        row.createCell(12).setCellValue("Email");
+        for(int i=0; i<13; i++){
+            row.createCell(i).setCellValue(primeraFila.get(i));
+        }
+
 
         int x= 0;
         for (int i = 0; i < rowNull.size(); i++) {
             row = sheet.createRow(rowNum++);
+           
             
             if (rowNull.get(i) == 1) {
                 row.createCell(0).setCellValue(atb.get(i-x).getEmpresas().getNombre());
