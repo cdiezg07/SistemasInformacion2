@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import modelo.AccesoExcel;
 import modelo.Empresas;
 import modelo.EmpresasDAO;
@@ -28,7 +26,6 @@ import modelo.XMLGenerator;
 public class SistemasInformacion2 {
 
     static boolean cuentaCorrecta = false;
-    
 
     /**
      * @param args the command line arguments
@@ -99,56 +96,10 @@ public class SistemasInformacion2 {
 //        }
         AccesoExcel ae = new AccesoExcel();
         try {
-            // ae.acceso();
-
-            
-            
             ArrayList<Trabajadorbbdd> atb = ae.accesoHoja3();
             modEmail(atb);
             modDni(atb);
-            XMLGenerator xml = new XMLGenerator("Cuentas", "ErroresCCC");
-            //Modficar codigo cuenta
-            String codigoCuenta = "";
-            String iban = "";
-            String cccErroneo = "";
-            for (int j = 0; j < atb.size(); j++) {
-                if (!atb.get(j).getNombre().equals("")) {
-                    cccErroneo = atb.get(j).getCodigoCuenta();
-                    codigoCuenta = ccc(atb.get(j).getCodigoCuenta());
-                    iban = iban(atb.get(j).getIban(), codigoCuenta);
-                    atb.get(j).setIban(iban);
-                    atb.get(j).setCodigoCuenta(codigoCuenta);
-                  
-                    if (!cuentaCorrecta) {
-                        ArrayList<String> key = new ArrayList<String>();
-                        ArrayList<String> valor = new ArrayList<String>();
-                        key.add("Nombre");
-                        key.add("Apellidos");
-                        key.add("Empresa");
-                        key.add("CCCErroneo");
-                        key.add("IBANCorrecto");
-
-                        valor.add(atb.get(j).getNombre());
-                        valor.add(atb.get(j).getApellido1() + " " + atb.get(j).getApellido2());
-                        valor.add(atb.get(j).getEmpresas().getNombre());
-                        valor.add(cccErroneo);
-                        valor.add(atb.get(j).getIban());
-
-                        xml.addItem("Cuenta", key, valor,atb.get(j).getIdTrabajador()+"");
-                    }
-
-                }
-            }
-            xml.generate();
-            
-
-            for (int i = 0; i < atb.size(); i++) {
-                Trabajadorbbdd tbd = atb.get(i);
-                System.out.println(tbd.getNombre() + ", " + tbd.getApellido1() + ", " + tbd.getApellido2() + ", " + tbd.getEmpresas().getNombre() + ", " + tbd.getEmail() + ", " + tbd.getNifnie()
-                        + ", " + tbd.getCodigoCuenta() + ", " + tbd.getIban());
-
-            }
-
+            modCCC(atb);
             ae.cargarNuevosDatos(atb);
 
         } catch (IOException ex) {
@@ -159,10 +110,47 @@ public class SistemasInformacion2 {
 
     }
 
+    private static void modCCC(ArrayList<Trabajadorbbdd> atb) throws Exception {
+        XMLGenerator xml = new XMLGenerator("Cuentas", "ErroresCCC");
+        //Modficar codigo cuenta
+        String codigoCuenta = "";
+        String iban = "";
+        String cccErroneo = "";
+        for (int j = 0; j < atb.size(); j++) {
+            if (!atb.get(j).getNombre().equals("")) {
+                cccErroneo = atb.get(j).getCodigoCuenta();
+                codigoCuenta = ccc(atb.get(j).getCodigoCuenta());
+                iban = iban(atb.get(j).getIban(), codigoCuenta);
+                atb.get(j).setIban(iban);
+                atb.get(j).setCodigoCuenta(codigoCuenta);
+
+                if (!cuentaCorrecta) {
+                    ArrayList<String> key = new ArrayList<String>();
+                    ArrayList<String> valor = new ArrayList<String>();
+                    key.add("Nombre");
+                    key.add("Apellidos");
+                    key.add("Empresa");
+                    key.add("CCCErroneo");
+                    key.add("IBANCorrecto");
+
+                    valor.add(atb.get(j).getNombre());
+                    valor.add(atb.get(j).getApellido1() + " " + atb.get(j).getApellido2());
+                    valor.add(atb.get(j).getEmpresas().getNombre());
+                    valor.add(cccErroneo);
+                    valor.add(atb.get(j).getIban());
+
+                    xml.addItem("Cuenta", key, valor, atb.get(j).getIdTrabajador() + "");
+                }
+
+            }
+        }
+        xml.generate();
+    }
+
     private static void modDni(ArrayList<Trabajadorbbdd> atb) throws Exception {
         char letras[] = {'T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E'};
         XMLGenerator xmlDNI = new XMLGenerator("Trabajadores", "Errores");
-        ArrayList<String> DNI=new ArrayList<String>();
+        ArrayList<String> DNI = new ArrayList<String>();
         for (int j = 0; j < atb.size(); j++) {
             if (!atb.get(j).getNifnie().equals("")) {
                 String cadena = atb.get(j).getNifnie();
@@ -184,21 +172,21 @@ public class SistemasInformacion2 {
                     s += cad[i];
                 }
                 int index = Integer.parseInt(s) % 23;
-                String DNIfinal=cadena;
+                String DNIfinal = cadena;
                 if (cad[cad.length - 1] == letras[index]) {
-                    
+
                 } else {
                     char cad2[] = cadena.toCharArray();
                     cad2[cad2.length - 1] = letras[index];
                     DNIfinal = String.valueOf(cad2);
-                    System.out.println("DNI final: " + DNIfinal);
+                    //System.out.println("DNI final: " + DNIfinal);
                     atb.get(j).setNifnie(DNIfinal);
                 }
-                if(DNI.isEmpty()){
+                if (DNI.isEmpty()) {
                     DNI.add(DNIfinal);
-                }else{
-                    boolean repetido=true;
-                    for(int i=0;i<DNI.size();i++){
+                } else {
+                    boolean repetido = true;
+                    for (int i = 0; i < DNI.size(); i++) {
                         if (DNI.get(i).equals(DNIfinal)) {
                             ArrayList<String> key = new ArrayList<String>();
                             ArrayList<String> valor = new ArrayList<String>();
@@ -214,14 +202,16 @@ public class SistemasInformacion2 {
                             valor.add(atb.get(j).getEmpresas().getNombre());
                             valor.add(atb.get(j).getCategorias().getNombreCategoria());
 
-                            xmlDNI.addItem("Cuenta", key, valor, atb.get(j).getIdTrabajador() + "");
-                            repetido=false;
+                            xmlDNI.addItem("Trabajador", key, valor, atb.get(j).getIdTrabajador() + "");
+                            repetido = false;
                         }
                     }
-                    if(repetido) DNI.add(DNIfinal);
+                    if (repetido) {
+                        DNI.add(DNIfinal);
+                    }
                 }
 
-            }else{
+            } else {
                 ArrayList<String> key = new ArrayList<String>();
                 ArrayList<String> valor = new ArrayList<String>();
                 key.add("Nombre");
@@ -237,14 +227,14 @@ public class SistemasInformacion2 {
                 valor.add(atb.get(j).getCategorias().getNombreCategoria());
 
                 xmlDNI.addItem("Cuenta", key, valor, atb.get(j).getIdTrabajador() + "");
-                
+
             }
         }
         xmlDNI.generate();
-        xmlDNI=null;
+        xmlDNI = null;
     }
 
-    public static String iban(String pais, String ccc) {
+    private static String iban(String pais, String ccc) {
         int[] valorNumerico = new int[2];
         valorNumerico[0] = valorNumerico(pais.charAt(0));
         valorNumerico[1] = valorNumerico(pais.charAt(1));
@@ -264,7 +254,7 @@ public class SistemasInformacion2 {
         }
     }
 
-    public static String ccc(String ccc) {
+    private static String ccc(String ccc) {
 
         int[] entidadOficina = new int[8];
         int[] dControl = new int[2];
@@ -311,7 +301,6 @@ public class SistemasInformacion2 {
 
         //Devuelvo el ccc correcto
         if (dControl[0] == dControlAux[0] && dControl[1] == dControlAux[1]) {
-            System.err.println("hahdfaksdf");
             cuentaCorrecta = true;
             return ccc;
         } else {
@@ -320,7 +309,7 @@ public class SistemasInformacion2 {
         }
     }
 
-    public static int calculadoraCCC(String digitoControl) {
+    private static int calculadoraCCC(String digitoControl) {
         int[] factores = {1, 2, 4, 8, 5, 10, 9, 7, 3, 6};
         int suma = 0;
         for (int i = 0; i < factores.length; i++) {
@@ -340,7 +329,7 @@ public class SistemasInformacion2 {
         }
     }
 
-    public static int valorNumerico(char i) {
+    private static int valorNumerico(char i) {
         switch (i) {
             case 'A':
                 return 10;
@@ -401,48 +390,120 @@ public class SistemasInformacion2 {
 
     private static void modEmail(ArrayList<Trabajadorbbdd> atb) {
 
-        ArrayList<String> emailsGenerados = new ArrayList<String>();
+        ArrayList<String> emailsGenerados3Letras = new ArrayList<String>();
+        ArrayList<String> emailsGenerados2Letras = new ArrayList<String>();
+        int numMasAlto = 0;
+        int num = 0;
+        Trabajadorbbdd tbd = null;
+
+        //Cogemos todos los emails ya hechos
+        emailsGenerados(atb, emailsGenerados2Letras, emailsGenerados3Letras);
 
         for (int i = 0; i < atb.size(); i++) {
             String email = "";
             boolean incrmentado = false;
-            Trabajadorbbdd tbd = atb.get(i);
+            numMasAlto = 0;
+            tbd = atb.get(i);
 
-            if (!tbd.getNombre().equals("")) {
-                email = tbd.getNombre().substring(0, 1) + tbd.getApellido1().substring(0, 1);
-                if (tbd.getApellido2() != "") {
-                    email += tbd.getApellido2().substring(0, 1);
-                }
+            if (tbd.getEmail().equals("")) {
+                if (!tbd.getNombre().equals("")) {
+                    email = tbd.getNombre().substring(0, 1) + tbd.getApellido1().substring(0, 1);
+                    if (!tbd.getApellido2().equals("")) {
+                        email += tbd.getApellido2().substring(0, 1);
+                    }
 
-                int cont = 0;
-                while (cont < emailsGenerados.size()) {
-                    if (emailsGenerados.get(cont).substring(0, 3).equals(email)) {
-                        int num = Integer.parseInt(emailsGenerados.get(cont).substring(3, 5));
-                        num++;
-                        incrmentado = true;
-                        if (num < 10) {
-                            email += "0" + String.valueOf(num);
-                        } else {
-                            email += String.valueOf(num);
+                    int cont = 0;
+                    //Comprobamos si la persona tiene 1 apellido o 2
+                    if (email.length() == 2) {
+                        num = 0;
+                        while (cont < emailsGenerados2Letras.size()) {
+                            String prueba = emailsGenerados2Letras.get(cont);
+                            if (prueba.substring(0, 2).equals(email) && prueba.substring(prueba.indexOf("@") + 1, prueba.indexOf(".")).equals(tbd.getEmpresas().getNombre())) {
+                                num = Integer.parseInt(prueba.substring(2, 4));
+
+                                if (num > numMasAlto) {
+                                    numMasAlto = num;
+                                }
+
+                                numMasAlto++;
+                                incrmentado = true;
+                                if (numMasAlto < 10) {
+                                    email += "0" + String.valueOf(numMasAlto);
+                                } else {
+                                    email += String.valueOf(numMasAlto);
+                                }
+                            }
+                            cont++;
                         }
+
+                        if (!incrmentado) {
+                            email += "00";
+                        }
+                        email += "@";
+                        email += tbd.getEmpresas().getNombre();
+                        email += ".com";
+                        tbd.setEmail(email);
+                        emailsGenerados2Letras.add(email);
+
+                    } else {
+                        num = 0;
+                        while (cont < emailsGenerados3Letras.size()) {
+                            String prueba = emailsGenerados3Letras.get(cont);
+                            if (prueba.substring(0, 3).equals(email) && prueba.substring(prueba.indexOf("@") + 1, prueba.indexOf(".")).equals(tbd.getEmpresas().getNombre())) {
+                                num = Integer.parseInt(prueba.substring(3, 5));
+
+                                if (num > numMasAlto) {
+                                    numMasAlto = num;
+                                }
+                                numMasAlto++;
+                                incrmentado = true;
+                                if (numMasAlto < 10) {
+                                    email += "0" + String.valueOf(numMasAlto);
+                                } else {
+                                    email += String.valueOf(numMasAlto);
+                                }
+                            }
+                            cont++;
+                        }
+
+                        if (!incrmentado) {
+                            email += "00";
+                        }
+                        email += "@";
+                        email += tbd.getEmpresas().getNombre();
+                        email += ".com";
+                        tbd.setEmail(email);
+                        emailsGenerados3Letras.add(email);
 
                     }
 
-                    cont++;
                 }
-
-                if (!incrmentado) {
-                    email += "00";
-                }
-
-                email += "@";
-                email += tbd.getEmpresas().getNombre();
-                email += ".com";
-                tbd.setEmail(email);
-                emailsGenerados.add(email);
             }
-
         }
+    }
+
+    private static void emailsGenerados(ArrayList<Trabajadorbbdd> atb, ArrayList<String> emailsGenerados2Letras, ArrayList<String> emailsGenerados3Letras) {
+        for (int i = 0; i < atb.size(); i++) {
+            if (!atb.get(i).getEmail().equals("")) {
+                if (isNumeric(String.valueOf(atb.get(i).getEmail().charAt(2)))) {
+                    emailsGenerados2Letras.add(atb.get(i).getEmail());
+                } else {
+                    emailsGenerados3Letras.add(atb.get(i).getEmail());
+                }
+            }
+        }
+    }
+
+    private static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
 }

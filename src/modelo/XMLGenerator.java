@@ -25,75 +25,78 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 public class XMLGenerator {
-	static String name;
-	DocumentBuilderFactory factory;
-	DocumentBuilder builder;
-	DOMImplementation implementation;
-	static Document document;
-	Element raiz;
-	String nomArchivo;
-    public XMLGenerator(String _name) throws Exception{
+
+    static String name;
+    DocumentBuilderFactory factory;
+    DocumentBuilder builder;
+    DOMImplementation implementation;
+    static Document document;
+    Element raiz;
+    String nomArchivo;
+
+    public XMLGenerator(String _name) throws Exception {
         name = _name;
         /*key = new ArrayList<String>();
         value = new ArrayList<String>();*/
-    	factory = DocumentBuilderFactory.newInstance();
+        factory = DocumentBuilderFactory.newInstance();
         builder = factory.newDocumentBuilder();
         implementation = builder.getDOMImplementation();
         document = implementation.createDocument(null, name, null);
         document.setXmlVersion("1.0");
         raiz = document.getDocumentElement();
-        }
+    }
 
-    public XMLGenerator(String _name, String nomArchivo) throws Exception{
+    public XMLGenerator(String _name, String nomArchivo) throws Exception {
         name = _name;
         this.nomArchivo = nomArchivo;
         /*key = new ArrayList<String>();
         value = new ArrayList<String>();*/
-    	factory = DocumentBuilderFactory.newInstance();
+        factory = DocumentBuilderFactory.newInstance();
         builder = factory.newDocumentBuilder();
         implementation = builder.getDOMImplementation();
         document = implementation.createDocument(null, name, null);
         document.setXmlVersion("1.0");
         raiz = document.getDocumentElement();
-        }
-    
-    public void addItem(String s, ArrayList<String> sk, ArrayList<String> sV) {
-         Element itemNode = document.createElement(s);
-         for(int i=0; i<sk.size();i++){
-             //Item Node
-              
-             //Key Node
-             Element keyNode = document.createElement(sk.get(i)); 
-             Text nodeKeyValue = document.createTextNode(sV.get(i));
-             keyNode.appendChild(nodeKeyValue);
-             //append keyNode and valueNode to itemNode
-             itemNode.appendChild(keyNode);              
-         }
-         //pegamos el elemento a la raiz "Documento"
-         raiz.appendChild(itemNode);
     }
-    public void addItem(String s, ArrayList<String> sk, ArrayList<String> sV, String atribute) {
+
+    public void addItem(String s, ArrayList<String> sk, ArrayList<String> sV) {
         Element itemNode = document.createElement(s);
-        itemNode.setAttribute("id", atribute);
-        for(int i=0; i<sk.size();i++){
+        for (int i = 0; i < sk.size(); i++) {
             //Item Node
-             
+
             //Key Node
-            Element keyNode = document.createElement(sk.get(i)); 
+            Element keyNode = document.createElement(sk.get(i));
             Text nodeKeyValue = document.createTextNode(sV.get(i));
             keyNode.appendChild(nodeKeyValue);
             //append keyNode and valueNode to itemNode
-            itemNode.appendChild(keyNode);              
+            itemNode.appendChild(keyNode);
         }
         //pegamos el elemento a la raiz "Documento"
         raiz.appendChild(itemNode);
-   }
+    }
 
-    public void generate() throws Exception{               
+    public void addItem(String s, ArrayList<String> sk, ArrayList<String> sV, String atribute) {
+        Element itemNode = document.createElement(s);
+        itemNode.setAttribute("id", atribute);
+        for (int i = 0; i < sk.size(); i++) {
+            //Item Node
+
+            //Key Node
+            Element keyNode = document.createElement(sk.get(i));
+            Text nodeKeyValue = document.createTextNode(sV.get(i));
+            keyNode.appendChild(nodeKeyValue);
+            //append keyNode and valueNode to itemNode
+            itemNode.appendChild(keyNode);
+        }
+        //pegamos el elemento a la raiz "Documento"
+        raiz.appendChild(itemNode);
+    }
+
+    public void generate() throws Exception {
         //Generate XML
         Source source = new DOMSource(document);
         //Indicamos donde lo queremos almacenar
-        Result result = new StreamResult(new java.io.File("./resources/"+this.nomArchivo+".xml")); //nombre del archivo
+        Result result = new StreamResult(new java.io.File("./resources/" + this.nomArchivo + ".xml")); //nombre del archivo
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(source, result);
     }
