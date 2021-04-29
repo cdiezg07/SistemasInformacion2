@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
@@ -34,10 +35,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class AccesoExcel {
 
-    ArrayList<String> prorrataExtra = new ArrayList<String>();
-    ArrayList<Integer> rowNull = new ArrayList<Integer>();
-    ArrayList<String> primeraFila = new ArrayList<String>();
-
+    ArrayList<String> prorrataExtra = new ArrayList<>();
+    ArrayList<Integer> rowNull = new ArrayList<>();
+    ArrayList<String> primeraFila = new ArrayList<>();
+    
+    HashMap<String, String[]> categorias = new HashMap<>();
+    HashMap<String, String> trienios = new HashMap<>();
+    HashMap<String, String> brutoAnual = new HashMap<>();
+    HashMap<String, String> cuotas = new HashMap<>();
+    
+    
     public ArrayList<Trabajadorbbdd> accesoHoja3() throws FileNotFoundException, IOException, ParseException {
         String excelFilePath = "./resources/SistemasInformacionII.xlsx";
         FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
@@ -95,13 +102,10 @@ public class AccesoExcel {
                 rowNull.add(0);
             } else {
                 rowNull.add(1);
-
                 tb = new Trabajadorbbdd();
                 tb.setEmpresas(new Empresas(col.get(0), col.get(1)));
-
                 c.setNombreCategoria(col.get(2));
                 tb.setCategorias(c);
-
                 tb.setFechaAlta(formatter1.parse(col.get(3)));
                 tb.setNombre(col.get(6));
                 tb.setApellido1(col.get(4));
@@ -115,7 +119,6 @@ public class AccesoExcel {
                 atb.add(tb);
             }
 
-            System.out.println();
         }
 
         workbook.close();
@@ -124,6 +127,216 @@ public class AccesoExcel {
         return atb;
     }
 
+    public void accesoHoja1() throws FileNotFoundException, IOException, ParseException {
+        String excelFilePath = "./resources/SistemasInformacionII.xlsx";
+        FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
+        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+
+        Workbook workbook = WorkbookFactory.create(new File(excelFilePath));
+
+        Sheet sheet = workbook.getSheetAt(0);
+
+        // Create a DataFormatter to format and get each cell's value as String
+        DataFormatter fmt = new DataFormatter();
+
+        for (int rn = 0; rn < 15; rn++) {
+            Row row = sheet.getRow(rn);
+
+            ArrayList<String> col = new ArrayList<String>();
+
+            // Row "rn" has data
+            for (int cn = 0; cn < 3; cn++) {
+                Cell cell = row.getCell(cn);
+                String cellStr = "";
+
+                if (cell == null) {
+                    // This cell is empty/blank/un-used, handle as needed
+                    col.add(cellStr);
+                } else {
+                    switch (cell.getCellType()) {
+                        case STRING:
+                            cellStr = fmt.formatCellValue(cell);
+                            col.add(cellStr);
+                            break;
+                        case NUMERIC:
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                String cellValue = formatter1.format(cell.getDateCellValue());
+                                col.add(cellValue);
+                            }else{
+                                cellStr = fmt.formatCellValue(cell);
+                                col.add(cellStr);
+                            }
+                            break;
+                        default:
+                            cellStr = fmt.formatCellValue(cell);
+                            col.add(cellStr);
+                            break;
+                    }
+                }
+            }
+            //Id de la columna
+            if (rn == 0) {
+            } else if (col.get(0).equals("")) {
+
+            } else {
+                categorias.put(col.get(0), new String[]{col.get(1), col.get(2)});
+            }
+
+        }
+
+        for (int rn = 0; rn < 19; rn++) {
+            Row row = sheet.getRow(rn);
+
+            ArrayList<String> col = new ArrayList<String>();
+
+            // Row "rn" has data
+            for (int cn = 5; cn < 7; cn++) {
+                Cell cell = row.getCell(cn);
+                String cellStr = "";
+
+                if (cell == null) {
+                    // This cell is empty/blank/un-used, handle as needed
+                    col.add(cellStr);
+                } else {
+                    switch (cell.getCellType()) {
+                        case STRING:
+                            cellStr = fmt.formatCellValue(cell);
+                            col.add(cellStr);
+                            break;
+                        case NUMERIC:
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                String cellValue = formatter1.format(cell.getDateCellValue());
+                                col.add(cellValue);
+                            }else{
+                                cellStr = fmt.formatCellValue(cell);
+                                col.add(cellStr);
+                            }
+                            break;
+                        default:
+                            cellStr = fmt.formatCellValue(cell);
+                            col.add(cellStr);
+                            break;
+                    }
+                }
+            }
+            //Id de la columna
+            if (rn == 0) {
+            } else if (col.get(0).equals("")) {
+            } else {
+                trienios.put(col.get(0), col.get(1));
+            }
+        }
+        workbook.close();
+        inputStream.close();
+        
+    }
+
+    public void accesoHoja2() throws FileNotFoundException, IOException, ParseException {
+        String excelFilePath = "./resources/SistemasInformacionII.xlsx";
+        FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
+        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+
+        Workbook workbook = WorkbookFactory.create(new File(excelFilePath));
+
+        Sheet sheet = workbook.getSheetAt(1);
+
+        // Create a DataFormatter to format and get each cell's value as String
+        DataFormatter fmt = new DataFormatter();
+
+        for (int rn = 0; rn < 50; rn++) {
+            Row row = sheet.getRow(rn);
+
+            ArrayList<String> col = new ArrayList<String>();
+
+            // Row "rn" has data
+            for (int cn = 0; cn < 2; cn++) {
+                Cell cell = row.getCell(cn);
+                String cellStr = "";
+
+                if (cell == null) {
+                    // This cell is empty/blank/un-used, handle as needed
+                    col.add(cellStr);
+                } else {
+                    switch (cell.getCellType()) {
+                        case STRING:
+                            cellStr = fmt.formatCellValue(cell);
+                            col.add(cellStr);
+                            break;
+                        case NUMERIC:
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                String cellValue = formatter1.format(cell.getDateCellValue());
+                                col.add(cellValue);
+                            }else{
+                                cellStr = fmt.formatCellValue(cell);
+                                col.add(cellStr);
+                            }
+                            break;
+                        default:
+                            cellStr = fmt.formatCellValue(cell);
+                            col.add(cellStr);
+                            break;
+                    }
+                }
+            }
+            //Id de la columna
+            if (rn == 0) {
+                
+            } else if (col.get(0).equals("")) {
+            } else {
+                brutoAnual.put(col.get(0), col.get(1));
+            }
+
+        }
+
+        for (int rn = 0; rn < 8; rn++) {
+            Row row = sheet.getRow(rn);
+
+            ArrayList<String> col = new ArrayList<String>();
+
+            // Row "rn" has data
+            for (int cn = 5; cn < 7; cn++) {
+                Cell cell = row.getCell(cn);
+                String cellStr = "";
+
+                if (cell == null) {
+                    // This cell is empty/blank/un-used, handle as needed
+                    col.add(cellStr);
+                } else {
+                    switch (cell.getCellType()) {
+                        case STRING:
+                            cellStr = fmt.formatCellValue(cell);
+                            col.add(cellStr);
+                            break;
+                        case NUMERIC:
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                String cellValue = formatter1.format(cell.getDateCellValue());
+                                col.add(cellValue);
+                            }else{
+                                cellStr = fmt.formatCellValue(cell);
+                                col.add(cellStr);
+                            }
+                            break;
+                        default:
+                            cellStr = fmt.formatCellValue(cell);
+                            col.add(cellStr);
+                            break;
+                    }
+                }
+            }
+            //Id de la columna
+            if (col.get(0).equals("")) {
+            } else {
+                cuotas.put(col.get(0), col.get(1));
+            }
+
+        }
+        workbook.close();
+        inputStream.close();
+
+    }
+
+    
+    
     public void cargarNuevosDatos(ArrayList<Trabajadorbbdd> atb) throws IOException {
         Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
 
@@ -180,5 +393,17 @@ public class AccesoExcel {
         // Closing the workbook
         workbook.close();
     }
-
+    
+    public HashMap getBrutoAnual(){
+        return this.brutoAnual;
+    }
+    public HashMap getTrienios(){
+            return this.trienios;
+        }
+    public HashMap getCuotas(){
+            return this.cuotas;
+        }
+    public HashMap getCategorias(){
+        return this.categorias;
+    }
 }

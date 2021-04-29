@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import modelo.AccesoExcel;
 import modelo.Empresas;
@@ -30,12 +31,12 @@ public class SistemasInformacion2 {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws FileNotFoundException, ParseException {
+    public static void main(String[] args) throws FileNotFoundException, ParseException, IOException {
         // TODO code application logic here
 
-//        Scanner leer = new Scanner(System.in);
-//
-//       
+        Scanner leer = new Scanner(System.in);
+
+       
 //        System.out.println("Introduce un DNI: ");
 //        String dni = leer.nextLine();
 //
@@ -94,13 +95,30 @@ public class SistemasInformacion2 {
 //
 //            HibernateUtil.shutdown();
 //        }
+        
+        System.out.println("Introduce una fecha para la generacion de nominas: ");
+        String fecha = leer.nextLine();
+        Date date=new SimpleDateFormat("MM/yyyy").parse(fecha);
+       // System.out.println(date.toString());
         AccesoExcel ae = new AccesoExcel();
+        ae.accesoHoja1();
+        ae.accesoHoja2();
+        System.out.println(ae.getCategorias());
+        System.out.println(ae.getTrienios());
+        System.out.println(ae.getBrutoAnual());
+        System.out.println(ae.getCuotas());
         try {
             ArrayList<Trabajadorbbdd> atb = ae.accesoHoja3();
             modEmail(atb);
             modDni(atb);
             modCCC(atb);
             ae.cargarNuevosDatos(atb);
+            
+            //Generacion Nominas
+            ArrayList<Trabajadorbbdd> nominasTrabajadores = nominasArealizar(atb, date);            
+            for(int i=0; i<nominasTrabajadores.size(); i++){            
+               System.out.println(nominasTrabajadores.get(i).getNombre());
+            }
 
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
@@ -110,6 +128,16 @@ public class SistemasInformacion2 {
 
     }
 
+    private static ArrayList<Trabajadorbbdd> nominasArealizar(ArrayList<Trabajadorbbdd> atb, Date fecha){
+        ArrayList<Trabajadorbbdd> nominasTrabajadores = new ArrayList<Trabajadorbbdd>();
+        for(int i=0; i<atb.size(); i++){
+            if(atb.get(i).getFechaAlta().compareTo(fecha) < 0){
+                nominasTrabajadores.add(atb.get(i));
+            }
+        }
+        return nominasTrabajadores;
+    }
+    
     private static void modCCC(ArrayList<Trabajadorbbdd> atb) throws Exception {
         XMLGenerator xml = new XMLGenerator("Cuentas", "ErroresCCC");
         //Modficar codigo cuenta
