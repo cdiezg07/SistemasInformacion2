@@ -406,4 +406,7 @@ public class AccesoExcel {
     public HashMap getCategorias(){
         return this.categorias;
     }
+    public ArrayList<String> getProrrata(){
+        return this.prorrataExtra;
+    }
 }

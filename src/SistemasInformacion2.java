@@ -98,15 +98,13 @@ public class SistemasInformacion2 {
         
         System.out.println("Introduce una fecha para la generacion de nominas: ");
         String fecha = leer.nextLine();
-        Date date=new SimpleDateFormat("MM/yyyy").parse(fecha);
+        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+
+        Date date= formatter1.parse(fecha);
        // System.out.println(date.toString());
         AccesoExcel ae = new AccesoExcel();
         ae.accesoHoja1();
         ae.accesoHoja2();
-        System.out.println(ae.getCategorias());
-        System.out.println(ae.getTrienios());
-        System.out.println(ae.getBrutoAnual());
-        System.out.println(ae.getCuotas());
         try {
             ArrayList<Trabajadorbbdd> atb = ae.accesoHoja3();
             modEmail(atb);
@@ -114,10 +112,18 @@ public class SistemasInformacion2 {
             modCCC(atb);
             ae.cargarNuevosDatos(atb);
             
+            
             //Generacion Nominas
-            ArrayList<Trabajadorbbdd> nominasTrabajadores = nominasArealizar(atb, date);            
-            for(int i=0; i<nominasTrabajadores.size(); i++){            
-               System.out.println(nominasTrabajadores.get(i).getNombre());
+            for(int i=0; i<atb.size(); i++){     
+                Trabajadorbbdd tb = atb.get(i);
+               
+               if(tb.getFechaAlta().compareTo(date) < 0){
+                    System.out.println(tb.getNombre());
+                    NominasLogica nl = new NominasLogica((String[]) ae.getCategorias().get(tb.getCategorias().getNombreCategoria()), ae.getProrrata().get(i), ae.getTrienios(), ae.getBrutoAnual(), 
+                            ae.getCuotas(), tb.getFechaAlta(), date);
+               }
+                
+
             }
 
         } catch (IOException ex) {
@@ -126,16 +132,6 @@ public class SistemasInformacion2 {
             System.err.println(ex.getMessage());
         }
 
-    }
-
-    private static ArrayList<Trabajadorbbdd> nominasArealizar(ArrayList<Trabajadorbbdd> atb, Date fecha){
-        ArrayList<Trabajadorbbdd> nominasTrabajadores = new ArrayList<Trabajadorbbdd>();
-        for(int i=0; i<atb.size(); i++){
-            if(atb.get(i).getFechaAlta().compareTo(fecha) < 0){
-                nominasTrabajadores.add(atb.get(i));
-            }
-        }
-        return nominasTrabajadores;
     }
     
     private static void modCCC(ArrayList<Trabajadorbbdd> atb) throws Exception {
