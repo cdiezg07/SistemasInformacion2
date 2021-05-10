@@ -112,17 +112,16 @@ public class SistemasInformacion2 {
             modCCC(atb);
             ae.cargarNuevosDatos(atb);
             
-            
             //Generacion Nominas
             for(int i=0; i<atb.size(); i++){     
-                Trabajadorbbdd tb = atb.get(i);
+               Trabajadorbbdd tb = atb.get(i);
                
                if(tb.getFechaAlta().compareTo(date) < 0){
-                    System.out.println(tb.getNombre());
+                    System.out.println(tb.getNombre()+"||||"+tb.getNifnie());
                     NominasLogica nl = new NominasLogica((String[]) ae.getCategorias().get(tb.getCategorias().getNombreCategoria()), ae.getProrrata().get(i), ae.getTrienios(), ae.getBrutoAnual(), 
                             ae.getCuotas(), tb.getFechaAlta(), date);
                }
-                
+               System.out.println("---------------------------------------------------------------------------");
 
             }
 
