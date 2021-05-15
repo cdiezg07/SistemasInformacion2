@@ -1,3 +1,5 @@
+package pruebas;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.Period;
@@ -19,12 +21,33 @@ public class NominasLogica {
         HashMap<String, String> Cuotas; 
         HashMap<String, String> irpf;
         int[] antiguedadMensual;
+        boolean añoIncompleto=false;
          
     public NominasLogica(String[] salarioComple, String prorrateo, HashMap<String, String> trienios, HashMap<String, String> irpf, HashMap<String, String> Cuotas, Date fechaAlta, Date fechaNomina){
-        
+        //public NominasLogica(){
         this.salarioBase = Float.parseFloat(salarioComple[0]);
-        this.complemento = Float.parseFloat(salarioComple[1]);
-        this.trienios = trienios;
+        /*this.salarioBase = 12000;
+        this.complemento = 1000;
+        this.trienios = new HashMap<String, String>();
+        trienios.put("0", "0");
+        trienios.put("1", "15");
+        trienios.put("2", "25");
+        trienios.put("3", "45");
+        trienios.put("4", "60");
+        trienios.put("5", "70");
+        trienios.put("6", "83");
+        trienios.put("7", "90");
+        trienios.put("8", "100");
+        trienios.put("9", "112");
+        trienios.put("10", "125");
+        trienios.put("11", "140");
+        trienios.put("12", "160");
+        trienios.put("13", "170");
+        trienios.put("14", "182");
+        trienios.put("15", "190");
+        trienios.put("16", "202");
+        trienios.put("17", "215");
+        trienios.put("18", "230");*/
         this.Cuotas = Cuotas;
         this.irpf = irpf;
         antiguedadMensual = new int[14];
@@ -32,11 +55,14 @@ public class NominasLogica {
             this.prorrateo = true;
         }else
             this.prorrateo = false;
+        //prorrateo=true;
 //        LocalDate d1 = LocalDate.parse("2008-06-01", DateTimeFormatter.ISO_LOCAL_DATE);
 //        LocalDate d2 = LocalDate.parse("2021-12-01", DateTimeFormatter.ISO_LOCAL_DATE);
 
         LocalDate localDate = fechaAlta.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        //LocalDate localDate = LocalDate.of(2013, 10, 1);  
         LocalDate localDate1 = fechaNomina.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        //LocalDate localDate1 =LocalDate.of(2013, 12, 1);;
         System.out.println(localDate.toString());
                 System.out.println(localDate1.toString());
 
@@ -45,16 +71,17 @@ public class NominasLogica {
         System.out.println("Salario base anual:\t" + salarioBase);
         System.out.println("Complemento anual:\t" + complemento);
 
-        System.out.println("\nAÃ±os:\t\t" + period.getYears());
+        System.out.println("\nAños:\t\t" + period.getYears());
         System.out.println("Trienios:\t" + calcularTrienios(period));
         // El importe bruto se puede/debe hacer buscando en el excel, no a fuerza bruta
-        System.out.println("Importe:\t" + importeBruto(localDate, period)+ "â‚¬/AÃ±o");
+        System.out.println("Importe:\t" + importeBruto(localDate, period)+ "€/Año");
         System.out.println();
 
         calcularNomina(salarioBase, complemento, importeBruto(localDate, period), localDate1.getMonthValue(), localDate.getMonthValue());
     }
     
     public int calcularTrienios(Period period) {
+    	if(period.getYears()==0) añoIncompleto=true;
         return Math.abs(period.getYears()) / 3;
     }
 
@@ -124,55 +151,99 @@ public class NominasLogica {
         }
         float brutoMensual = 0;
         brutoMensual = salarioBaseMensual + complementoMensual + this.antiguedadMensual[mesNomina-1] + prorrateoExtra;
-//        if (this.prorrateo)
-//            brutoMensual = salarioBaseMensual + complementoMensual + antiguedadMensual + prorrateoExtra;
-//        else
-//            brutoMensual = salarioBaseMensual + complementoMensual + antiguedadMensual;
-//
-//        float cuotaSSocial = Float.parseFloat(Cuotas.get("Cuota obrera general TRABAJADOR").replace(",", "."))/100;
-//        float cuotaDesempleo = Float.parseFloat(Cuotas.get("Cuota desempleo TRABAJADOR").replace(",", "."))/100;
-//        float cuotaFormacion = Float.parseFloat(Cuotas.get("Cuota formaciÃ³n TRABAJADOR").replace(",", "."))/100;
-        
+        /*if (this.prorrateo)
+            brutoMensual = salarioBaseMensual + complementoMensual + this.antiguedadMensual[mesNomina-1] + prorrateoExtra;
+        else
+            brutoMensual = salarioBaseMensual + complementoMensual + this.antiguedadMensual[mesNomina-1];*/
+
+        float cuotaSSocial = Float.parseFloat(Cuotas.get("Cuota obrera general TRABAJADOR").replace(",", "."))/100;
+        //float cuotaSSocial = 0.047f;
+        float cuotaDesempleo = Float.parseFloat(Cuotas.get("Cuota desempleo TRABAJADOR").replace(",", "."))/100;
+        //float cuotaDesempleo = 0.016f;
+        float cuotaFormacion = Float.parseFloat(Cuotas.get("Cuota formación TRABAJADOR").replace(",", "."))/100;
+        //float cuotaFormacion =0.01f;
+        float contingencias = Float.parseFloat(Cuotas.get("Contingencias comunes EMPRESARIO").replace(",", "."))/100;
+        //float contingencias = 0.23f;
+        float fogasa = Float.parseFloat(Cuotas.get("Fogasa EMPRESARIO").replace(",", "."))/100;
+        //float fogasa = 0.002f;
+        float desempleo = Float.parseFloat(Cuotas.get("Desempleo EMPRESARIO").replace(",", "."))/100;
+        //float desempleo =0.067f;
+        float formacion = Float.parseFloat(Cuotas.get("Formacion EMPRESARIO").replace(",", "."))/100;
+        //float formacion =0.006f;
         float brutoMensualExtra = 0;
         float brutoAnual = 0;
         //Calcular el bruto anual siempre con prorrateo
         
-        // estos pagos se liquidan 12 veces al aÃ±o
-        if (this.prorrateo){
+        // estos pagos se liquidan 12 veces al año
+        if(añoIncompleto) {
+        	if (this.prorrateo) {
+        		brutoAnual = brutoMensual*(mesNomina-mesFechaAlta);
+        		brutoMensualExtra = brutoMensual*(mesFechaAlta/mesNomina);
+        	}else {
+        		
+        		if((mesNomina-mesFechaAlta)<6) {
+        			//System.out.println("si");
+        			float aux=(float) (mesFechaAlta%6)/6;
+        			brutoAnual += brutoMensual*aux;
+        			//System.out.println(mesFechaAlta%6+"/"+aux);
+        		}
+        		if((mesNomina-mesFechaAlta)>=6) {
+        			//System.out.println("no");
+        			brutoAnual += brutoMensual + brutoMensual*((mesFechaAlta%6)/6);
+        		}
+        		brutoAnual += brutoMensual*(mesNomina-mesFechaAlta);
+        		brutoMensualExtra = brutoMensual + prorrateoExtra;
+        	}
+    	}else if (this.prorrateo){
             if(mesFechaAlta>=7 && mesFechaAlta<=11){
                 brutoAnual = salarioBase + complemento + antiguedadAnual + (this.antiguedadMensual[13]/6);
             }else{
                 brutoAnual = salarioBase + complemento + antiguedadAnual;
             }
-//            brutoMensualExtra = brutoMensual;
-//            brutoAnual = brutoMensual*12;
+            brutoMensualExtra = brutoMensual;
+           // brutoAnual = brutoMensual*12;
         } else {
+        	//no me fio
             brutoAnual = salarioBase + complemento + antiguedadAnual;
-//            brutoMensualExtra = brutoMensual + prorrateoExtra;
-//            brutoAnual = brutoMensual*14;
+            brutoMensualExtra = brutoMensual + prorrateoExtra;
+            //brutoAnual = brutoMensual*14;
         }
-//        float cuotaIRPF = getIrpf(brutoAnual)/100;
-//        float seguridadSocial = brutoMensualExtra * cuotaSSocial;
-//        float desempleo = brutoMensualExtra * cuotaDesempleo;
-//        float formacion = brutoMensualExtra * cuotaFormacion;
-//        // este pago se hace con el brutoMensual
-//        float IRPF = brutoMensual * cuotaIRPF;
-//
-//        float liquidoMensual = brutoMensual - seguridadSocial - desempleo - formacion - IRPF;
-//
+        
+        float cuotaIRPF = getIrpf(brutoAnual)/100;
+        //float cuotaIRPF =0.0f;
+        float seguridadSocial = brutoMensual * cuotaSSocial;
+        float cdesempleo = brutoMensual * cuotaDesempleo;
+        float cformacion = brutoMensual * cuotaFormacion;
+        // este pago se hace con el brutoMensual
+        float IRPF = brutoMensual * cuotaIRPF;
+        
+        float contingenciasE=contingencias*brutoMensual;
+        float fogasaE=fogasa*brutoMensual;
+        float desempleoE=desempleo*brutoMensual;
+        float formacionE=formacion*brutoMensual;
+        float liquidoMensual = brutoMensual - seguridadSocial - desempleo - formacion - IRPF;
+        float costeTotal = liquidoMensual + formacionE + desempleoE + fogasaE + contingenciasE;
+
         System.out.println("Bruto anual:\t" + brutoAnual);
         System.out.println("Salario base mensual:\t" + salarioBaseMensual);
         System.out.println("Complemento mensual:\t" + complementoMensual);
-        System.out.println("AntigÃ¼edad:\t\t" + antiguedadMensual);
+        System.out.println("Antigüedad:\t\t" + antiguedadMensual);
         System.out.println("\nBruto cada mes:\t\t" + brutoMensual + "\n");
-        System.out.println("\nProrrateo extra:\t" + prorrateoExtra + "\n");
-//
-//        System.out.println("AUX:\t\t\t" + brutoMensualExtra);
-//        System.out.println("S. Social:\t\t" + seguridadSocial);
-//        System.out.println("Desempleo:\t\t" + desempleo);
-//        System.out.println("Formacion:\t\t" + formacion);
-//        System.out.println("IRPF:\t\t\t" + IRPF);
-//        System.out.println("\nLiquido mensual:\t" + liquidoMensual + "\n");
+        //System.out.println("\nProrrateo extra:\t" + prorrateoExtra + "\n");
+
+        //System.out.println("AUX:\t\t\t" + brutoMensualExtra);
+        System.out.println("S. Social:\t\t" + seguridadSocial);
+        System.out.println("Desempleo:\t\t" + cdesempleo);
+        System.out.println("Formacion:\t\t" + cformacion);
+        System.out.println("IRPF:\t\t\t" + IRPF);
+        System.out.println("\nLiquido mensual:\t" + liquidoMensual + "\n");
+        
+        System.out.println("Costes empresario");
+        System.out.println("Contingencias Empresario:\t"+contingenciasE);
+        System.out.println("Fogasa Empresario:\t\t"+fogasaE);
+        System.out.println("Desempleo Empresario:\t\t"+desempleoE);
+        System.out.println("Formacion Empresario:\t\t"+formacionE);
+        System.out.println("Total Empresario:\t\t"+costeTotal);
     }
 
     private LocalDate convertDateToLocalDateUsingOfEpochMilli(Date fechaAlta) {
