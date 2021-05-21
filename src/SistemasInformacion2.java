@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import modelo.AccesoExcel;
 import modelo.Empresas;
@@ -96,12 +98,21 @@ public class SistemasInformacion2 {
 //            HibernateUtil.shutdown();
 //        }
         
-        System.out.println("Introduce una fecha para la generacion de nominas: ");
+        /*System.out.println("Introduce una fecha para la generacion de nominas: ");
         String fecha = leer.nextLine();
         SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
 
-        Date date= formatter1.parse(fecha);
+        LocalDate date= formatter1.parse(fecha);*/
        // System.out.println(date.toString());
+        Scanner sc = new Scanner(System.in);
+        /*
+         * Manejo de fechas
+         */
+        System.out.println("Introduce el mes de la nomina(numero): ");
+        int mes = sc.nextInt();
+        System.out.println("Introduce el año de la nomina(numero): ");
+        int anyo = sc.nextInt();
+        
         AccesoExcel ae = new AccesoExcel();
         ae.accesoHoja1();
         ae.accesoHoja2();
@@ -115,15 +126,16 @@ public class SistemasInformacion2 {
             //Generacion Nominas
             for(int i=0; i<atb.size(); i++){     
                Trabajadorbbdd tb = atb.get(i);
-               
-               if(tb.getFechaAlta().compareTo(date) < 0){
+               LocalDate fa = tb.getFechaAlta().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+               //if(tb.getFechaAlta().compareTo(date) < 0){
                     System.out.println(tb.getNombre()+"||||"+tb.getNifnie());
                     NominasLogica nl = new NominasLogica((String[]) ae.getCategorias().get(tb.getCategorias().getNombreCategoria()), ae.getProrrata().get(i), ae.getTrienios(), ae.getBrutoAnual(), 
-                            ae.getCuotas(), tb.getFechaAlta(), date);
-               }
+                            ae.getCuotas(), fa, mes, anyo);
+               //}
                System.out.println("---------------------------------------------------------------------------");
 
             }
+            sc.close();
 
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
