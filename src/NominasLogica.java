@@ -262,7 +262,12 @@ public class NominasLogica {
             }
         } else { // Sin antiguedad
             if (period.getYears() > 0) { // Anyo completo
-                return salarioBase + complementos;
+                float extraPosterior = 0;
+                
+                if((period.getYears()+1)%3 == 0 && period.getMonths()+6 >= 12){
+                    extraPosterior = importePorTrienios(numTrienios+1)/6f;
+                }
+                return salarioBase + complementos + extraPosterior;
             } else { // Anyo no completo, empezo a trabajar el mismo anyo
                 if(isNominaProrrateada){ // Con la nomina prorrateada
                     return ((salarioBase + complementos) / 12f) * period.getMonths();
