@@ -264,7 +264,7 @@ public class NominasLogica {
             if (period.getYears() > 0) { // Anyo completo
                 float extraPosterior = 0;
                 
-                if((period.getYears()+1)%3 == 0 && period.getMonths()+6 >= 12){
+                if((period.getYears()+1)%3 == 0 && period.getMonths()+5 >= 12){
                     extraPosterior = importePorTrienios(numTrienios+1)/6f;
                 }
                 return salarioBase + complementos + extraPosterior;
