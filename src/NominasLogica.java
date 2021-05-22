@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 /**
  *
- * @author carlos
+ * @author carlos, sergio, mario
  */
 public class NominasLogica {
 
@@ -23,7 +23,7 @@ public class NominasLogica {
          * Manejo de fechas
          */
         int mes = normalizarMes(mesNomina);
-        int anyo = normalizarAnyo(mesNomina, anyoNomina);
+        int anyo = normalizarAnyo(mes, anyoNomina);
         System.out.println();
 
         LocalDate fechaAlta = LocalDate.of(fechaAltaTrabajador.getYear(), fechaAltaTrabajador.getMonth(), 1);
@@ -58,16 +58,16 @@ public class NominasLogica {
             /*
              * Bruto anual teniendo en cuenta opcion de prorrateo
              */
-            float brutoAnual = calcularBrutoAnual(salarioBase, complementos, numTrieniosAnual, periodAnual);
+            boolean isNominaProrrateada = isNominaProrrateada(prorrateo);
+            float brutoAnual = calcularBrutoAnual(salarioBase, complementos, numTrieniosAnual, periodAnual, isNominaProrrateada);
             System.out.println("Bruto anual: " + brutoAnual);
 
             /*
              * Valores de la nomina, como si tuviera prorrateo
              */
-            float salarioBaseMensual = salarioBase / 14;
-            float complementosMensual = complementos / 14;
+            float salarioBaseMensual = salarioBase / 14f;
+            float complementosMensual = complementos / 14f;
             float importePorTrieniosMensual = importePorTrienios(numTrieniosNomina);
-            boolean isNominaProrrateada = isNominaProrrateada(prorrateo);
             float prorrateoExtra = calcularProrrateoExtra(salarioBaseMensual, complementosMensual,
                     importePorTrieniosMensual);
             float brutoMensualProrrateado = salarioBaseMensual + complementosMensual + importePorTrieniosMensual
@@ -76,8 +76,8 @@ public class NominasLogica {
             float nomina = 0;
             float nominaExtra = 0;
             float empresario = 0;
-            //this.irpf = irpf;
-            cuotaIRPF = 10.35f;
+            this.irpf = irpf;
+            cuotaIRPF = getIrpf(brutoAnual);
 
             if (isNominaProrrateada) {
                 /*
@@ -227,7 +227,7 @@ public class NominasLogica {
      * @param period       periodo trabajado
      * @return el bruto anual del trabajador
      */
-    private float calcularBrutoAnual(float salarioBase, float complementos, int numTrienios, Period period) {
+    private float calcularBrutoAnual(float salarioBase, float complementos, int numTrienios, Period period, boolean isNominaProrrateada) {
         int trienioAnterior = 0;
         if (numTrienios - 1 < 0)
             trienioAnterior = 0;
@@ -237,15 +237,26 @@ public class NominasLogica {
 
         if (numTrienios > 0) { // Con antiguedad
             if (period.getYears() % 3 == 0) { // Con cambio de trienios
-                if (period.getMonths() > 7) { // cambio anterior extra de junio
-                    return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
-                            + (trienioAnterior * (13 - period.getMonths())) + importePorTrienios(numTrienios)
-                            + importePorTrienios(numTrienios);
-                } else { // cambio posterior extra de junio
-                    return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
-                            + (trienioAnterior * (13 - period.getMonths())) + importePorTrienios(numTrienios)
-                            + trienioAnterior;
+                if(isNominaProrrateada){ // con la nomina prorrateada
+                    if (period.getMonths() > 6) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
+                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
+                                + (trienioAnterior * (13 - period.getMonths())) + (importePorTrienios(numTrienios)/6f*7) + (importePorTrienios(numTrienios)/6f*5);
+                    } else { // cambio posterior extra de junio
+                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
+                                + (trienioAnterior * (13 - period.getMonths())) + ((importePorTrienios(numTrienios)/6f)*7) + ((trienioAnterior/6f)*5);
+                    }
+                } else { // con la nomina sin prorratear
+                    if (period.getMonths() > 6) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
+                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
+                                + (trienioAnterior * (13 - period.getMonths())) + importePorTrienios(numTrienios)
+                                + importePorTrienios(numTrienios);
+                    } else { // cambio posterior extra de junio
+                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
+                                + (trienioAnterior * (13 - period.getMonths())) + importePorTrienios(numTrienios)
+                                + trienioAnterior;
+                    }
                 }
+                
             } else { // Sin cambio de trienios
                 return salarioBase + complementos + (importePorTrienios(numTrienios) * 14);
             }
@@ -253,7 +264,17 @@ public class NominasLogica {
             if (period.getYears() > 0) { // Anyo completo
                 return salarioBase + complementos;
             } else { // Anyo no completo, empezo a trabajar el mismo anyo
-                return ((salarioBase + complementos) / 12) * period.getMonths();
+                if(isNominaProrrateada){ // Con la nomina prorrateada
+                    return ((salarioBase + complementos) / 12f) * period.getMonths();
+                } else { // Sin prorrateo                    
+                    if(period.getMonths() > 6) { //anterior extra de junio
+                        //nominas completas + la extra que no se llega a cobrar completa
+                        return ((salarioBase+complementos)/14f)*(period.getMonths()+1)+((salarioBase+complementos)/14f)*(period.getMonths()-7)/6f;
+                    } else { //posterior extra de junio
+                        //nominas completas + la extra que no se llega a combrar completa
+                        return ((salarioBase+complementos)/14f)*(period.getMonths())+((salarioBase+complementos)/14f)*(period.getMonths()-1)/6f;
+                    }
+                }
             }
         }
     }
@@ -279,7 +300,7 @@ public class NominasLogica {
      */
     private float calcularProrrateoExtra(float salarioBaseMensual, float complementosMensual,
             float importePorTrieniosMensual) {
-        return (salarioBaseMensual / 6) + (complementosMensual / 6) + (importePorTrieniosMensual / 6);
+        return (salarioBaseMensual / 6f) + (complementosMensual / 6f) + (importePorTrieniosMensual / 6f);
     }
 
     /**
@@ -319,7 +340,7 @@ public class NominasLogica {
         System.out.println("Contingencias generales\t\t" + "04.70% de " + brutoSobrePagos + "\t\t\t\t\t\t" + sSocial);
         System.out.println("Desempleo\t\t\t" + "01.60% de " + brutoSobrePagos + "\t\t\t\t\t\t" + desempleo);
         System.out.println("Cuota formación\t\t\t" + "00.10% de " + brutoSobrePagos + "\t\t\t\t\t\t" + formacion);
-        System.out.println("IRPF\t\t\t\t" + "09.55% de " + brutoMensual + "\t\t\t\t\t\t" + IRPF);
+        System.out.println("IRPF\t\t\t\t" + cuotaIRPF + "% de " + brutoMensual + "\t\t\t\t\t\t" + IRPF);
         System.out.println(
                 "---------------------------------------------------------------------------------------------------------");
         System.out.println("Total deducciones\t\t\t\t\t\t\t\t\t\t" + (sSocial + desempleo + formacion + IRPF));
@@ -385,7 +406,7 @@ public class NominasLogica {
         System.out.println("Contingencias generales\t\t" + "04.70% de 00.00\t\t\t\t\t\t\t00.00");
         System.out.println("Desempleo\t\t\t" + "01.60% de 00.0\t\t\t\t\t\t\t00.00");
         System.out.println("Cuota formación\t\t\t" + "0010% de 00.00\t\t\t\t\t\t\t00.00");
-        System.out.println("IRPF\t\t\t\t" + "09.55% de " + auxBrutoMensual + "\t\t\t\t\t\t" + IRPF);
+        System.out.println("IRPF\t\t\t\t" + cuotaIRPF + "% de " + auxBrutoMensual + "\t\t\t\t\t\t" + IRPF);
         System.out.println(
                 "---------------------------------------------------------------------------------------------------------");
         System.out.println("Total deducciones\t\t\t\t\t\t\t\t\t\t" + (IRPF));
@@ -440,8 +461,8 @@ public class NominasLogica {
             return 0f;
         } else{
             if(auxSueldo==0){
-                aux = (int)auxSueldo;
-                return Float.parseFloat(irpf.get(aux+"").replace(",", "."));
+                aux = (int)(auxSueldo);
+                return Float.parseFloat(irpf.get((int)sueldo+"").replace(",", "."));
             }else{
                 aux = (int)(sueldo+1000-auxSueldo);
                 return Float.parseFloat(irpf.get(aux+"").replace(",", "."));  
