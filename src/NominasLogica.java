@@ -18,10 +18,11 @@ public class NominasLogica {
         HashMap<String, String> irpf;
         
         float cuotaIRPF;
-    public NominasLogica(String[] salarioComple, String prorrateo, HashMap<String, String> trienios, HashMap<String, String> irpf, HashMap<String, String> Cuotas, LocalDate fechaAltaTrabajador, int mesNomina, int anyoNomina){
+    public NominasLogica(String[] salarioComple, String prorrateo, HashMap<String, String> trienio, HashMap<String, String> irpf, HashMap<String, String> Cuotas, LocalDate fechaAltaTrabajador, int mesNomina, int anyoNomina){
         /*
          * Manejo de fechas
          */
+        trienios=trienio;
         int mes = normalizarMes(mesNomina);
         int anyo = normalizarAnyo(mes, anyoNomina);
         System.out.println();
@@ -174,48 +175,11 @@ public class NominasLogica {
      * @param trienios numero de trienios del trabajador
      * @return el importe que recibe por los trienios trabajados
      */
-    private int importePorTrienios(int trienios) {
-        switch (trienios) {
-            case 0:
-                return 0;
-            case 1:
-                return 15;
-            case 2:
-                return 25;
-            case 3:
-                return 45;
-            case 4:
-                return 60;
-            case 5:
-                return 70;
-            case 6:
-                return 83;
-            case 7:
-                return 90;
-            case 8:
-                return 100;
-            case 9:
-                return 112;
-            case 10:
-                return 125;
-            case 11:
-                return 140;
-            case 12:
-                return 160;
-            case 13:
-                return 170;
-            case 14:
-                return 182;
-            case 15:
-                return 190;
-            case 16:
-                return 202;
-            case 17:
-                return 215;
-
-            default:
-                return 230;
-        }
+    private int importePorTrienios(int trienio) {
+        if(trienio==0)
+            return 0;
+        return Integer.parseInt(trienios.get(trienio+""));
+        
     }
 
     /**
