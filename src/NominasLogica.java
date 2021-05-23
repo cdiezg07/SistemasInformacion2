@@ -238,7 +238,7 @@ public class NominasLogica {
         if (numTrienios > 0) { // Con antiguedad
             if (period.getYears() % 3 == 0) { // Con cambio de trienios
                 if(isNominaProrrateada){ // con la nomina prorrateada
-                    if (period.getMonths() > 6) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
+                    if (period.getMonths() > 7) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
                         return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
                                 + (trienioAnterior * (13 - period.getMonths())) + (importePorTrienios(numTrienios)/6f*7) + (importePorTrienios(numTrienios)/6f*5);
                     } else { // cambio posterior extra de junio
@@ -246,7 +246,7 @@ public class NominasLogica {
                                 + (trienioAnterior * (13 - period.getMonths())) + ((importePorTrienios(numTrienios)/6f)*7) + ((trienioAnterior/6f)*5);
                     }
                 } else { // con la nomina sin prorratear
-                    if (period.getMonths() > 6) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
+                    if (period.getMonths() > 7) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
                         return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
                                 + (trienioAnterior * (13 - period.getMonths())) + importePorTrienios(numTrienios)
                                 + importePorTrienios(numTrienios);
