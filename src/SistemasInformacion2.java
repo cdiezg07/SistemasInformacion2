@@ -23,7 +23,7 @@ import modelo.XMLGenerator;
      * and open the template in the editor.
  */ /**
  *
- * @author carlos
+ * @author carlos, sergio, mario
  */
 
 public class SistemasInformacion2 {
@@ -108,10 +108,11 @@ public class SistemasInformacion2 {
         /*
          * Manejo de fechas
          */
-        System.out.println("Introduce el mes de la nomina(numero): ");
-        int mes = sc.nextInt();
-        System.out.println("Introduce el año de la nomina(numero): ");
-        int anyo = sc.nextInt();
+        System.out.println("Introduce el mm/yyyy de la nomina: ");
+        String[] fecha = sc.nextLine().split("/");
+        sc.close();
+        int mes = Integer.parseInt(fecha[0]);
+        int anyo = Integer.parseInt(fecha[1]);
         
         AccesoExcel ae = new AccesoExcel();
         ae.accesoHoja1();
