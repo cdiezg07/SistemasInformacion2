@@ -236,27 +236,30 @@ public class NominasLogica {
         }
 
         if (numTrienios > 0) { // Con antiguedad
-            if (period.getYears() % 3 == 0) { // Con cambio de trienios
+            if (period.getYears() % 3 == 0 || ((period.getYears()-1)%3 == 0 ) && period.getMonths() == 0) { // Con cambio de trienios
+                int auxMonths = period.getMonths();
+                if(((period.getYears()-1)%3 == 0 ) && period.getMonths() == 0){// caso especial para cambio de trienios el 1 de enero
+                    auxMonths = 12;
+                }
                 if(isNominaProrrateada){ // con la nomina prorrateada
-                    if (period.getMonths() > 7) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
-                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
-                                + (trienioAnterior * (13 - period.getMonths())) + (importePorTrienios(numTrienios)/6f*7) + (importePorTrienios(numTrienios)/6f*5);
+                    if (auxMonths > 7) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
+                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
+                                + (trienioAnterior * (13 - auxMonths)) + (importePorTrienios(numTrienios)/6f*7) + (importePorTrienios(numTrienios)/6f*5);
                     } else { // cambio posterior extra de junio
-                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
-                                + (trienioAnterior * (13 - period.getMonths())) + ((importePorTrienios(numTrienios)/6f)*7) + ((trienioAnterior/6f)*5);
+                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
+                                + (trienioAnterior * (13 - auxMonths)) + ((importePorTrienios(numTrienios)/6f)*7) + ((trienioAnterior/6f)*5);
                     }
                 } else { // con la nomina sin prorratear
-                    if (period.getMonths() > 7) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
-                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
-                                + (trienioAnterior * (13 - period.getMonths())) + importePorTrienios(numTrienios)
+                    if (auxMonths > 7) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
+                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
+                                + (trienioAnterior * (13 - auxMonths)) + importePorTrienios(numTrienios)
                                 + importePorTrienios(numTrienios);
                     } else { // cambio posterior extra de junio
-                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() - 1))
-                                + (trienioAnterior * (13 - period.getMonths())) + importePorTrienios(numTrienios)
+                        return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
+                                + (trienioAnterior * (13 - auxMonths)) + importePorTrienios(numTrienios)
                                 + trienioAnterior;
                     }
                 }
-                
             } else { // Sin cambio de trienios
                 return salarioBase + complementos + (importePorTrienios(numTrienios) * 14);
             }
