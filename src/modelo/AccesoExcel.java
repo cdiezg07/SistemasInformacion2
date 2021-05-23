@@ -386,7 +386,7 @@ public class AccesoExcel {
         }
 
         // Write the output to a file
-        FileOutputStream fileOut = new FileOutputStream("./resources/Nuevo.xlsx");
+        FileOutputStream fileOut = new FileOutputStream("./resources/SistemasInformacionIITrasEjecucion.xlsx");
         workbook.write(fileOut);
         fileOut.close();
 

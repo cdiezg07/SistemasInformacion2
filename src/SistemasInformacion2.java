@@ -16,7 +16,6 @@ import modelo.NominaDAO;
 import modelo.Trabajadorbbdd;
 import modelo.TrabajadorbbddDAO;
 import modelo.XMLGenerator;
-
 /*
      * To change this license header, choose License Headers in Project Properties.
      * To change this template file, choose Tools | Templates
@@ -114,6 +113,12 @@ public class SistemasInformacion2 {
         int mes = Integer.parseInt(fecha[0]);
         int anyo = Integer.parseInt(fecha[1]);
         
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, anyo);
+        cal.set(Calendar.MONTH, mes);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        Date date = cal.getTime();
+        
         AccesoExcel ae = new AccesoExcel();
         ae.accesoHoja1();
         ae.accesoHoja2();
@@ -128,12 +133,14 @@ public class SistemasInformacion2 {
             for(int i=0; i<atb.size(); i++){     
                Trabajadorbbdd tb = atb.get(i);
                LocalDate fa = tb.getFechaAlta().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-               //if(tb.getFechaAlta().compareTo(date) < 0){
-                    System.out.println(tb.getNombre()+"||||"+tb.getNifnie());
+               if(tb.getFechaAlta().compareTo(date) < 0){
+                    System.out.println("Nombre y apellidos: "+tb.getNombre()+" "+tb.getApellido1()+" "+tb.getApellido2()+", DNI: "+tb.getNifnie()+", Fecha Alta: "+tb.getFechaAlta()+", IBAN: "+tb.getIban());
+                    System.out.println("Empresa: "+tb.getEmpresas().getNombre()+", CIF: "+tb.getEmpresas().getCif());
                     NominasLogica nl = new NominasLogica((String[]) ae.getCategorias().get(tb.getCategorias().getNombreCategoria()), ae.getProrrata().get(i), ae.getTrienios(), ae.getBrutoAnual(), 
                             ae.getCuotas(), fa, mes, anyo);
-               //}
-               System.out.println("---------------------------------------------------------------------------");
+                    System.out.println("---------------------------------------------------------------------------");
+               }
+               
 
             }
             sc.close();
