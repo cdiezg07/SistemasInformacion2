@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,49 +60,61 @@ public class AccesoExcel {
 
         ArrayList<Trabajadorbbdd> atb = new ArrayList<Trabajadorbbdd>();
         Trabajadorbbdd tb = null;
+        boolean filaNula = false;
 
         for (int rn = 0; rn <= sheet.getLastRowNum(); rn++) {
             Row row = sheet.getRow(rn);
-
+            filaNula = false;
             ArrayList<String> col = new ArrayList<String>();
 
             Categorias c = new Categorias();
             // Row "rn" has data
             for (int cn = 0; cn < sheet.getRow(0).getLastCellNum(); cn++) {
-                Cell cell = row.getCell(cn);
-                String cellStr = "";
+                if(row==null){
+                    filaNula = true;
+                    break;
+                }else{
+                    Cell cell = row.getCell(cn);
+                    String cellStr = "";
 
-                if (cell == null) {
-                    // This cell is empty/blank/un-used, handle as needed
-                    col.add(cellStr);
-                } else {
-                    switch (cell.getCellType()) {
-                        case STRING:
-                            cellStr = fmt.formatCellValue(cell);
-                            col.add(cellStr);
-                            break;
-                        case NUMERIC:
-                            if (DateUtil.isCellDateFormatted(cell)) {
-                                String cellValue = formatter1.format(cell.getDateCellValue());
-                                col.add(cellValue);
-                            }
-                            break;
-                        default:
-                            cellStr = fmt.formatCellValue(cell);
-                            col.add(cellStr);
-                            break;
+                    if (cell == null && cn==0) {
+                        // This cell is empty/blank/un-used, handle as needed
+                        col.add(cellStr);
+                        break;
+                    }else if(cell == null){
+                        col.add(cellStr);
+                    }else {
+                        switch (cell.getCellType()) {
+                            case STRING:
+                                cellStr = fmt.formatCellValue(cell);
+                                col.add(cellStr);
+                                break;
+                            case NUMERIC:
+                                if (DateUtil.isCellDateFormatted(cell)) {
+                                    String cellValue = formatter1.format(cell.getDateCellValue());
+                                    col.add(cellValue);
+                                }
+                                break;
+                            default:
+                                cellStr = fmt.formatCellValue(cell);
+                                col.add(cellStr);
+                                break;
+                        }
                     }
                 }
+                 
             }
             //Id de la columna
             col.add(Integer.toString(rn));
 
             if (rn == 0) {
                 primeraFila = col;
-            } else if (col.get(0).equals("")) {
+            } else if (filaNula == true || col.get(0).equals("")) {
                 rowNull.add(0);
             } else {
                 rowNull.add(1);
+                System.out.println(col.get(0));
+                System.out.println(Arrays.deepToString(col.toArray()));
                 tb = new Trabajadorbbdd();
                 tb.setEmpresas(new Empresas(col.get(0), col.get(1)));
                 c.setNombreCategoria(col.get(2));

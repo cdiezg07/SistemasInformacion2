@@ -10,6 +10,7 @@ import java.util.*;
 import modelo.AccesoExcel;
 import modelo.Empresas;
 import modelo.EmpresasDAO;
+import modelo.GeneracionPdf;
 import modelo.HibernateUtil;
 import modelo.Nomina;
 import modelo.NominaDAO;
@@ -129,6 +130,7 @@ public class SistemasInformacion2 {
             modCCC(atb);
             ae.cargarNuevosDatos(atb);
             
+            GeneracionPdf gp = new GeneracionPdf();
             //Generacion Nominas
             for(int i=0; i<atb.size(); i++){     
                Trabajadorbbdd tb = atb.get(i);
@@ -138,12 +140,16 @@ public class SistemasInformacion2 {
                     System.out.println("Empresa: "+tb.getEmpresas().getNombre()+", CIF: "+tb.getEmpresas().getCif());
                     NominasLogica nl = new NominasLogica((String[]) ae.getCategorias().get(tb.getCategorias().getNombreCategoria()), ae.getProrrata().get(i), ae.getTrienios(), ae.getBrutoAnual(), 
                             ae.getCuotas(), fa, mes, anyo);
-                    System.out.println("---------------------------------------------------------------------------");
+                    System.out.println(i+"---------------------------------------------------------------------------");
+                     System.out.println("asdfasdfasdfasdfasdfasdfasdf");
+        
+                    //gp.GeneracionPdfNominas(tb);
                }
                
-
             }
-            sc.close();
+            
+            
+       
 
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
