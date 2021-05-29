@@ -510,8 +510,8 @@ public class NominasLogica {
      * @param sueldo sueldo que cobra el trabajador
      * @return cuota de irpf
      */
-    private double getIrpf(double sueldo){
-        double auxSueldo = sueldo % 1000;
+    private float getIrpf(double sueldo){
+        int auxSueldo = (int)sueldo % 1000;
         int aux;
         if(sueldo<12000){
             return 0f;
@@ -520,7 +520,7 @@ public class NominasLogica {
                 aux = (int)(auxSueldo);
                 return Float.parseFloat(irpf.get((int)sueldo+"").replace(",", "."));
             }else{
-                aux = (int)(sueldo+1000-auxSueldo);
+                aux = (int)(((int)sueldo)+1000-auxSueldo);
                 return Float.parseFloat(irpf.get(aux+"").replace(",", "."));  
             }
         }

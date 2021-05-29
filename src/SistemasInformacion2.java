@@ -138,18 +138,23 @@ public class SistemasInformacion2 {
                if(tb.getFechaAlta().compareTo(date) < 0){
                     System.out.println("Nombre y apellidos: "+tb.getNombre()+" "+tb.getApellido1()+" "+tb.getApellido2()+", DNI: "+tb.getNifnie()+", Fecha Alta: "+tb.getFechaAlta()+", IBAN: "+tb.getIban());
                     System.out.println("Empresa: "+tb.getEmpresas().getNombre()+", CIF: "+tb.getEmpresas().getCif());
-                    NominasLogica nl = new NominasLogica((String[]) ae.getCategorias().get(tb.getCategorias().getNombreCategoria()), ae.getProrrata().get(i), ae.getTrienios(), ae.getBrutoAnual(), 
-                            ae.getCuotas(), fa, mes, anyo);
+                    NominasLogica n = new NominasLogica((String[]) ae.getCategorias().get(tb.getCategorias().getNombreCategoria()), ae.getProrrata().get(i), 
+                            ae.getTrienios(), ae.getBrutoAnual(), ae.getCuotas(), fa, mes, anyo, tb);
                     System.out.println(i+"---------------------------------------------------------------------------");
-                     System.out.println("asdfasdfasdfasdfasdfasdfasdf");
         
-                    //gp.GeneracionPdfNominas(tb);
+                    ArrayList<Nomina> lista = new ArrayList<Nomina>();
+                    lista = n.getNominas();
+                    for(int j=0; j<lista.size(); j++){
+                        if(lista.get(j).getTrabajadorbbdd()!=null && j==1){
+                            gp.GeneracionPdfNominas(lista.get(j), true); 
+                        }else{
+                            gp.GeneracionPdfNominas(lista.get(j), false);
+                        }
+                    }
+                    
                }
                
             }
-            
-            
-       
 
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
