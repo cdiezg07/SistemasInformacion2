@@ -44,6 +44,20 @@ public class TrabajadorbbddDAO {
 
         return tbd1;
     }
+    public void add(Trabajadorbbdd tbd3){
+        Trabajadorbbdd tbd2=buscarTrabajador(tbd3.getNifnie());
+        if(tbd2==null){
+            
+            tx=sesion.beginTransaction();
+            sesion.saveOrUpdate(tbd3);
+            tx.commit();
+        }else if(!tbd3.getFechaAlta().equals(tbd2.getFechaAlta()) && !tbd3.getNombre().equals(tbd2.getNombre())){
+            
+            tx=sesion.beginTransaction();
+            sesion.saveOrUpdate(tbd3);
+            tx.commit();
+        }        
+    }
     public List<Trabajadorbbdd> getTrabajadoresToDelete(int idEmpresa) {
         
         try {

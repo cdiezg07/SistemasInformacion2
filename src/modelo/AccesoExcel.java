@@ -44,7 +44,8 @@ public class AccesoExcel {
     HashMap<String, String> trienios = new HashMap<>();
     HashMap<String, String> brutoAnual = new HashMap<>();
     HashMap<String, String> cuotas = new HashMap<>();
-    
+    ArrayList<Categorias> cat=new ArrayList<Categorias>();
+    ArrayList<Empresas> em=new ArrayList<Empresas>();
     
     public ArrayList<Trabajadorbbdd> accesoHoja3() throws FileNotFoundException, IOException, ParseException {
         String excelFilePath = "./resources/SistemasInformacionII.xlsx";
@@ -130,6 +131,7 @@ public class AccesoExcel {
                 tb.setIban(col.get(10));
                 tb.setIdTrabajador(Integer.parseInt(col.get(13)) + 1);
                 atb.add(tb);
+                em.add(new Empresas(col.get(0),col.get(1)));
             }
 
         }
@@ -193,6 +195,7 @@ public class AccesoExcel {
 
             } else {
                 categorias.put(col.get(0), new String[]{col.get(1), col.get(2)});
+                cat.add(new Categorias(col.get(0), Double.parseDouble(col.get(1)), Double.parseDouble(col.get(2))));
             }
 
         }
@@ -387,6 +390,7 @@ public class AccesoExcel {
                 row.createCell(10).setCellValue(atb.get(i - x).getIban().substring(0, 2));
                 row.createCell(11).setCellValue(atb.get(i - x).getIban());
                 row.createCell(12).setCellValue(atb.get(i - x).getEmail());
+                
             } else {
                 x++;
             }
@@ -421,5 +425,11 @@ public class AccesoExcel {
     }
     public ArrayList<String> getProrrata(){
         return this.prorrataExtra;
+    }
+    public ArrayList<Categorias> getCat(){
+        return cat;
+    }
+    public ArrayList<Empresas> getEM(){
+        return em;
     }
 }

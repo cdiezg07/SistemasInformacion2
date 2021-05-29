@@ -21,13 +21,14 @@ public class EmpresasDAO {
     Session sesion = null;
     List<Empresas> ListaEmpresas = null;
     List<String> ListaEmpresasNombre = null;
+    Transaction tx = null;
 
     public List<Empresas> getEmpresas(int IdEmpresa) {
 
         try {
             sf = HibernateUtil.getSessionFactory();
             sesion = sf.openSession();
-            String consultaHQL = "from Empresas e WHERE e.idEmpresa!=:param1";
+            String consultaHQL = "from empresas e WHERE e.idEmpresa=:param1";
             Query query = sesion.createQuery(consultaHQL).setParameter("param1", IdEmpresa);
             ListaEmpresas = query.list();
 
@@ -38,6 +39,30 @@ public class EmpresasDAO {
         return ListaEmpresas;
     }
 
+    public List<Empresas> getEmpresasCIF(String CIF) {
+        Empresas em=null;
+        try {
+            sf = HibernateUtil.getSessionFactory();
+            sesion = sf.openSession();
+            String consultaHQL = "from Empresas e WHERE e.CIF!=:param1";
+            Query query = sesion.createQuery(consultaHQL).setParameter("param1", CIF);
+            ListaEmpresas = query.list();
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return ListaEmpresas;
+    }
+
+    public void add(Empresas em){
+        List<Empresas> Em2= getEmpresasCIF(em.getCif());
+        if(Em2==null){
+            tx=sesion.beginTransaction();
+            sesion.saveOrUpdate(em);
+            tx.commit();
+        }
+    }
     public void editarEmpresas2021(List<Empresas> ListaEmpresas) {
         try {
             sf = HibernateUtil.getSessionFactory();
