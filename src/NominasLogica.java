@@ -336,6 +336,7 @@ public class NominasLogica {
         nomina.setValorProrrateo(prorrateoExtra);
         nomina.setImporteSeguridadSocialTrabajador(sSocial);
         nomina.setSeguridadSocialTrabajador(getCuotas("Cuota obrera general TRABAJADOR"));
+        nomina.setSeguridadSocialTrabajador(0d);
         nomina.setImporteDesempleoTrabajador(desempleo);
         nomina.setDesempleoTrabajador(getCuotas("Cuota desempleo TRABAJADOR"));
         nomina.setImporteFormacionTrabajador(formacion);
@@ -415,11 +416,19 @@ public class NominasLogica {
         nominaExtra.setImporteTrienios(importePorTrieniosMensual);
         nominaExtra.setValorProrrateo(prorrateoExtra);
         nominaExtra.setImporteSeguridadSocialTrabajador(0d);
+
         nominaExtra.setSeguridadSocialTrabajador(getCuotas("Cuota obrera general TRABAJADOR"));
         nominaExtra.setImporteDesempleoTrabajador(0d);
         nominaExtra.setDesempleoTrabajador(getCuotas("Cuota desempleo TRABAJADOR"));
         nominaExtra.setImporteFormacionTrabajador(0d);
         nominaExtra.setFormacionTrabajador(getCuotas("Cuota formación TRABAJADOR"));
+
+        nominaExtra.setSeguridadSocialTrabajador(0d);
+        nominaExtra.setImporteDesempleoTrabajador(0d);
+        nominaExtra.setDesempleoTrabajador(0d);
+        nominaExtra.setImporteFormacionTrabajador(0d);
+        nominaExtra.setFormacionTrabajador(0d);
+
         nominaExtra.setImporteIrpf(IRPF);
         nominaExtra.setIrpf(cuotaIRPF);
         
@@ -519,8 +528,8 @@ public class NominasLogica {
      * @param sueldo sueldo que cobra el trabajador
      * @return cuota de irpf
      */
-    private float getIrpf(double sueldo){
-        int auxSueldo = (int)sueldo % 1000;
+    private double getIrpf(double sueldo){
+        double auxSueldo = sueldo % 1000;
         int aux;
         if(sueldo<12000){
             return 0f;
@@ -529,7 +538,7 @@ public class NominasLogica {
                 aux = (int)(auxSueldo);
                 return Float.parseFloat(irpf.get((int)sueldo+"").replace(",", "."));
             }else{
-                aux = (int)(((int)sueldo)+1000-auxSueldo);
+                aux = (int)(sueldo+1000-auxSueldo);
                 return Float.parseFloat(irpf.get(aux+"").replace(",", "."));  
             }
         }
