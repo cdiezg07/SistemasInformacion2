@@ -138,9 +138,6 @@ public class NominasLogica {
                     nominaExtra.setMes(mesNomina);
                     nominaExtra.setNumeroTrienios(numTrieniosNomina);
                     nominaExtra.setBrutoAnual(brutoAnual);
-//                    nominaExtra.setImporteSalarioMes(salarioBaseMensual);
-//                    nominaExtra.setImporteComplementoMes(complementosMensual);
-//                    //nominaExtra.setImporteTrienios();
                     /*
                      * Parte trabajador
                      */
@@ -229,23 +226,27 @@ public class NominasLogica {
         else {
             trienioAnterior = importePorTrienios(numTrienios - 1);
         }
-
+        System.out.println(period.getYears() + " " + period.getMonths() + " " + period.getDays());
         if (numTrienios > 0) { // Con antiguedad
             if (period.getYears() % 3 == 0 || ((period.getYears()-1)%3 == 0 ) && period.getMonths() == 0) { // Con cambio de trienios
                 int auxMonths = period.getMonths();
                 if(((period.getYears()-1)%3 == 0 ) && period.getMonths() == 0){// caso especial para cambio de trienios el 1 de enero
                     auxMonths = 12;
+                }else if(((period.getYears())%3 == 0 ) && period.getMonths() == 1){// caso especial para cambio de trienios el 1 de diciembre
+                    auxMonths = 0;
                 }
                 if(isNominaProrrateada){ // con la nomina prorrateada
-                    if (auxMonths > 7) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
+                    if (auxMonths > 7) { // cambio anterior extra de junio
+                        System.out.println("ENTRO AQUI");
                         return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
                                 + (trienioAnterior * (13 - auxMonths)) + (importePorTrienios(numTrienios)/6d*7) + (importePorTrienios(numTrienios)/6d*5);
                     } else { // cambio posterior extra de junio
+                System.out.println("ENTRO AQUI");
                         return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
                                 + (trienioAnterior * (13 - auxMonths)) + ((importePorTrienios(numTrienios)/6d)*7) + ((trienioAnterior/6d)*5);
                     }
                 } else { // con la nomina sin prorratear
-                    if (auxMonths > 7) { // cambio anterior extra de junio ---------------------------------------------------------------- si algun bruto no funciona poner 7
+                    if (auxMonths > 7) { // cambio anterior extra de junio
                         return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
                                 + (trienioAnterior * (13 - auxMonths)) + importePorTrienios(numTrienios)
                                 + importePorTrienios(numTrienios);
@@ -256,6 +257,7 @@ public class NominasLogica {
                     }
                 }
             } else { // Sin cambio de trienios
+                System.out.println("ENTRO AQUI");
                 return salarioBase + complementos + (importePorTrienios(numTrienios) * 14);
             }
         } else { // Sin antiguedad
@@ -336,7 +338,6 @@ public class NominasLogica {
         nomina.setValorProrrateo(prorrateoExtra);
         nomina.setImporteSeguridadSocialTrabajador(sSocial);
         nomina.setSeguridadSocialTrabajador(getCuotas("Cuota obrera general TRABAJADOR"));
-        nomina.setSeguridadSocialTrabajador(0d);
         nomina.setImporteDesempleoTrabajador(desempleo);
         nomina.setDesempleoTrabajador(getCuotas("Cuota desempleo TRABAJADOR"));
         nomina.setImporteFormacionTrabajador(formacion);
@@ -416,19 +417,11 @@ public class NominasLogica {
         nominaExtra.setImporteTrienios(importePorTrieniosMensual);
         nominaExtra.setValorProrrateo(prorrateoExtra);
         nominaExtra.setImporteSeguridadSocialTrabajador(0d);
-
         nominaExtra.setSeguridadSocialTrabajador(getCuotas("Cuota obrera general TRABAJADOR"));
         nominaExtra.setImporteDesempleoTrabajador(0d);
         nominaExtra.setDesempleoTrabajador(getCuotas("Cuota desempleo TRABAJADOR"));
         nominaExtra.setImporteFormacionTrabajador(0d);
         nominaExtra.setFormacionTrabajador(getCuotas("Cuota formación TRABAJADOR"));
-
-        nominaExtra.setSeguridadSocialTrabajador(0d);
-        nominaExtra.setImporteDesempleoTrabajador(0d);
-        nominaExtra.setDesempleoTrabajador(0d);
-        nominaExtra.setImporteFormacionTrabajador(0d);
-        nominaExtra.setFormacionTrabajador(0d);
-
         nominaExtra.setImporteIrpf(IRPF);
         nominaExtra.setIrpf(cuotaIRPF);
         
@@ -528,8 +521,8 @@ public class NominasLogica {
      * @param sueldo sueldo que cobra el trabajador
      * @return cuota de irpf
      */
-    private double getIrpf(double sueldo){
-        double auxSueldo = sueldo % 1000;
+    private float getIrpf(double sueldo){
+        int auxSueldo = (int)sueldo % 1000;
         int aux;
         if(sueldo<12000){
             return 0f;
@@ -538,7 +531,7 @@ public class NominasLogica {
                 aux = (int)(auxSueldo);
                 return Float.parseFloat(irpf.get((int)sueldo+"").replace(",", "."));
             }else{
-                aux = (int)(sueldo+1000-auxSueldo);
+                aux = (int)(((int)sueldo)+1000-auxSueldo);
                 return Float.parseFloat(irpf.get(aux+"").replace(",", "."));  
             }
         }
