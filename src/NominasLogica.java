@@ -29,7 +29,9 @@ public class NominasLogica {
         /*
          * Manejo de fechas
          */
-        trienios=trienio;
+        this.trienios=trienio;
+        this.Cuotas = Cuotas;
+        this.irpf = irpf;
         int mes = normalizarMes(mesNomina);
         int anyo = normalizarAnyo(mes, anyoNomina);
         System.out.println();
@@ -91,7 +93,7 @@ public class NominasLogica {
             double liquidoNomina = 0;
             double liquidoNominaExtra = 0;
             double empresario = 0;
-            this.irpf = irpf;
+            
             cuotaIRPF = getIrpf(brutoAnual);
             
             
@@ -322,9 +324,9 @@ public class NominasLogica {
     private double calcularNomina(double salarioBaseMensual, double complementosMensual,
             double importePorTrieniosMensual, double brutoMensual, double brutoSobrePagos, double prorrateoExtra,
             int numTrienios) {
-        double sSocial = brutoSobrePagos * (4.7d / 100);
-        double desempleo = brutoSobrePagos * (1.6d / 100);
-        double formacion = brutoSobrePagos * (0.1d / 100);
+        double sSocial = brutoSobrePagos * (getCuotas("Cuota obrera general TRABAJADOR") / 100);
+        double desempleo = brutoSobrePagos * (getCuotas("Cuota desempleo TRABAJADOR") / 100);
+        double formacion = brutoSobrePagos * (getCuotas("Cuota formación TRABAJADOR") / 100);
         double IRPF = brutoMensual * (cuotaIRPF / 100);
         
         nomina.setBrutoNomina(brutoMensual);
@@ -333,11 +335,11 @@ public class NominasLogica {
         nomina.setImporteTrienios(importePorTrieniosMensual);
         nomina.setValorProrrateo(prorrateoExtra);
         nomina.setImporteSeguridadSocialTrabajador(sSocial);
-        nomina.setSeguridadSocialTrabajador(0d);
+        nomina.setSeguridadSocialTrabajador(getCuotas("Cuota obrera general TRABAJADOR"));
         nomina.setImporteDesempleoTrabajador(desempleo);
-        nomina.setDesempleoTrabajador(0d);
+        nomina.setDesempleoTrabajador(getCuotas("Cuota desempleo TRABAJADOR"));
         nomina.setImporteFormacionTrabajador(formacion);
-        nomina.setFormacionTrabajador(0d);
+        nomina.setFormacionTrabajador(getCuotas("Cuota formación TRABAJADOR"));
         nomina.setImporteIrpf(IRPF);
         nomina.setIrpf(cuotaIRPF);
         
@@ -413,11 +415,11 @@ public class NominasLogica {
         nominaExtra.setImporteTrienios(importePorTrieniosMensual);
         nominaExtra.setValorProrrateo(prorrateoExtra);
         nominaExtra.setImporteSeguridadSocialTrabajador(0d);
-        nominaExtra.setSeguridadSocialTrabajador(0d);
+        nominaExtra.setSeguridadSocialTrabajador(getCuotas("Cuota obrera general TRABAJADOR"));
         nominaExtra.setImporteDesempleoTrabajador(0d);
-        nominaExtra.setDesempleoTrabajador(0d);
+        nominaExtra.setDesempleoTrabajador(getCuotas("Cuota desempleo TRABAJADOR"));
         nominaExtra.setImporteFormacionTrabajador(0d);
-        nominaExtra.setFormacionTrabajador(0d);
+        nominaExtra.setFormacionTrabajador(getCuotas("Cuota formación TRABAJADOR"));
         nominaExtra.setImporteIrpf(IRPF);
         nominaExtra.setIrpf(cuotaIRPF);
         
@@ -455,36 +457,36 @@ public class NominasLogica {
      * @return devuelve la parte especifica del empresario
      */
     private double parteEspecificaEmpresario(double brutoSobrePagos, boolean extra) {
-        double sSocial = brutoSobrePagos * (23.6d / 100);
-        double desempleo = brutoSobrePagos * (6.7d / 100);
-        double formacion = brutoSobrePagos * (0.6d / 100);
-        double accidentes = brutoSobrePagos * (1d / 100);
-        double fogasa = brutoSobrePagos * (0.2d / 100);
+        double sSocial = brutoSobrePagos * (getCuotas("Contingencias comunes EMPRESARIO") / 100);
+        double desempleo = brutoSobrePagos * (getCuotas("Desempleo EMPRESARIO") / 100);
+        double formacion = brutoSobrePagos * (getCuotas("Formacion EMPRESARIO") / 100);
+        double accidentes = brutoSobrePagos * (getCuotas("Accidentes trabajo EMPRESARIO") / 100);
+        double fogasa = brutoSobrePagos * (getCuotas("Fogasa EMPRESARIO") / 100);
         
-        if(!extra){
-            nomina.setBaseEmpresario(brutoSobrePagos);
-            nomina.setImporteSeguridadSocialEmpresario(sSocial);
-            nomina.setSeguridadSocialEmpresario(0d);
-            nomina.setImporteDesempleoEmpresario(desempleo);
-            nomina.setDesempleoEmpresario(0d);
-            nomina.setImporteFormacionEmpresario(formacion);
-            nomina.setFormacionEmpresario(0d);
-            nomina.setImporteAccidentesTrabajoEmpresario(accidentes);
-            nomina.setAccidentesTrabajoEmpresario(0d);
-            nomina.setImporteFogasaempresario(fogasa);
-            nomina.setFogasaempresario(0d);
-        } else {
+        if(extra){
             nominaExtra.setBaseEmpresario(brutoSobrePagos);
             nominaExtra.setImporteSeguridadSocialEmpresario(sSocial);
-            nominaExtra.setSeguridadSocialEmpresario(0d);
+            nominaExtra.setSeguridadSocialEmpresario(getCuotas("Contingencias comunes EMPRESARIO"));
             nominaExtra.setImporteDesempleoEmpresario(desempleo);
-            nominaExtra.setDesempleoEmpresario(0d);
+            nominaExtra.setDesempleoEmpresario(getCuotas("Desempleo EMPRESARIO"));
             nominaExtra.setImporteFormacionEmpresario(formacion);
-            nominaExtra.setFormacionEmpresario(0d);
+            nominaExtra.setFormacionEmpresario(getCuotas("Formacion EMPRESARIO"));
             nominaExtra.setImporteAccidentesTrabajoEmpresario(accidentes);
-            nominaExtra.setAccidentesTrabajoEmpresario(0d);
+            nominaExtra.setAccidentesTrabajoEmpresario(getCuotas("Accidentes trabajo EMPRESARIO"));
             nominaExtra.setImporteFogasaempresario(fogasa);
-            nominaExtra.setFogasaempresario(0d);
+            nominaExtra.setFogasaempresario(getCuotas("Fogasa EMPRESARIO"));   
+        } else {
+            nomina.setBaseEmpresario(brutoSobrePagos);
+            nomina.setImporteSeguridadSocialEmpresario(sSocial);
+            nomina.setSeguridadSocialEmpresario(getCuotas("Contingencias comunes EMPRESARIO"));
+            nomina.setImporteDesempleoEmpresario(desempleo);
+            nomina.setDesempleoEmpresario(getCuotas("Desempleo EMPRESARIO"));
+            nomina.setImporteFormacionEmpresario(formacion);
+            nomina.setFormacionEmpresario(getCuotas("Formacion EMPRESARIO"));
+            nomina.setImporteAccidentesTrabajoEmpresario(accidentes);
+            nomina.setAccidentesTrabajoEmpresario(getCuotas("Accidentes trabajo EMPRESARIO"));
+            nomina.setImporteFogasaempresario(fogasa);
+            nomina.setFogasaempresario(getCuotas("Fogasa EMPRESARIO"));
         }
         
 
@@ -506,6 +508,10 @@ public class NominasLogica {
 
         
         return sSocial + desempleo + formacion + accidentes + fogasa;
+    }
+    
+    private Double getCuotas(String tipoDeCuota){
+        return Double.parseDouble(Cuotas.get(tipoDeCuota).replace(",", "."));
     }
 
     /**

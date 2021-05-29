@@ -121,6 +121,7 @@ public class SistemasInformacion2 {
         Date date = cal.getTime();
         
         AccesoExcel ae = new AccesoExcel();
+        //Obtenemos hashmap de categorias y trienios en accesoHoja1 y hashmap de irpf y cuotas en accesoHoja2
         ae.accesoHoja1();
         ae.accesoHoja2();
         try {
@@ -157,9 +158,9 @@ public class SistemasInformacion2 {
             }
 
         } catch (IOException ex) {
-            System.err.println(ex.getMessage());
+            System.out.println(ex.getMessage());
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            System.out.println(ex.getMessage());
         }
 
     }
@@ -264,7 +265,7 @@ public class SistemasInformacion2 {
                         DNI.add(DNIfinal);
                     }
                 }
-
+            //Si esta vacio el campo DNI
             } else {
                 ArrayList<String> key = new ArrayList<String>();
                 ArrayList<String> valor = new ArrayList<String>();
