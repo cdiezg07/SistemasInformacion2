@@ -136,6 +136,9 @@ public class NominasLogica {
                     nominaExtra.setMes(mesNomina);
                     nominaExtra.setNumeroTrienios(numTrieniosNomina);
                     nominaExtra.setBrutoAnual(brutoAnual);
+//                    nominaExtra.setImporteSalarioMes(salarioBaseMensual);
+//                    nominaExtra.setImporteComplementoMes(complementosMensual);
+//                    //nominaExtra.setImporteTrienios();
                     /*
                      * Parte trabajador
                      */
@@ -330,7 +333,7 @@ public class NominasLogica {
         nomina.setImporteTrienios(importePorTrieniosMensual);
         nomina.setValorProrrateo(prorrateoExtra);
         nomina.setImporteSeguridadSocialTrabajador(sSocial);
-        nomina.setImporteSeguridadSocialTrabajador(0d);
+        nomina.setSeguridadSocialTrabajador(0d);
         nomina.setImporteDesempleoTrabajador(desempleo);
         nomina.setDesempleoTrabajador(0d);
         nomina.setImporteFormacionTrabajador(formacion);
@@ -404,19 +407,19 @@ public class NominasLogica {
 
         double IRPF = auxBrutoMensual * (cuotaIRPF / 100);
 
-        nomina.setBrutoNomina(brutoMensual);
-        nomina.setImporteSalarioMes(salarioBaseMensual);
-        nomina.setImporteComplementoMes(complementosMensual);
-        nomina.setImporteTrienios(importePorTrieniosMensual);
-        nomina.setValorProrrateo(prorrateoExtra);
-        nomina.setImporteSeguridadSocialTrabajador(0d);
-        nomina.setImporteSeguridadSocialTrabajador(0d);
-        nomina.setImporteDesempleoTrabajador(0d);
-        nomina.setDesempleoTrabajador(0d);
-        nomina.setImporteFormacionTrabajador(0d);
-        nomina.setFormacionTrabajador(0d);
-        nomina.setImporteIrpf(IRPF);
-        nomina.setIrpf(cuotaIRPF);
+        nominaExtra.setBrutoNomina(brutoMensual);
+        nominaExtra.setImporteSalarioMes(salarioBaseMensual);
+        nominaExtra.setImporteComplementoMes(complementosMensual);
+        nominaExtra.setImporteTrienios(importePorTrieniosMensual);
+        nominaExtra.setValorProrrateo(prorrateoExtra);
+        nominaExtra.setImporteSeguridadSocialTrabajador(0d);
+        nominaExtra.setSeguridadSocialTrabajador(0d);
+        nominaExtra.setImporteDesempleoTrabajador(0d);
+        nominaExtra.setDesempleoTrabajador(0d);
+        nominaExtra.setImporteFormacionTrabajador(0d);
+        nominaExtra.setFormacionTrabajador(0d);
+        nominaExtra.setImporteIrpf(IRPF);
+        nominaExtra.setIrpf(cuotaIRPF);
         
         System.out.println(
                 "\n\n//////////////////////////\n\tPaga Extra\n//////////////////////////\n\nConceptos\t\t\tCantidad\t\tImp. Unitario\t\tDevengo\t\tDeduccion");

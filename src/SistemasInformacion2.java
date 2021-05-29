@@ -147,7 +147,7 @@ public class SistemasInformacion2 {
                     for(int j=0; j<lista.size(); j++){
                         if(lista.get(j).getTrabajadorbbdd()!=null && j==1){
                             gp.GeneracionPdfNominas(lista.get(j), true); 
-                        }else{
+                        }else if(j==0){
                             gp.GeneracionPdfNominas(lista.get(j), false);
                         }
                     }

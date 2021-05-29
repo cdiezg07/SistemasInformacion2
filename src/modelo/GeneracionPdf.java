@@ -254,7 +254,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell32.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell33 = new Cell();
-        cell33.add(new Paragraph("04.70% de "+nomina.getBrutoNomina()).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell33.add(new Paragraph("04.70% de "+nomina.getBaseEmpresario()).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell33.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell34 = new Cell();
@@ -274,7 +274,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell37.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell38 = new Cell();
-        cell38.add(new Paragraph("01.60% de "+nomina.getBrutoNomina()).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell38.add(new Paragraph("01.60% de "+nomina.getBaseEmpresario()).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell38.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell39 = new Cell();
@@ -294,7 +294,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell42.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell43 = new Cell();
-        cell43.add(new Paragraph("00.10% de "+nomina.getBrutoNomina()).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell43.add(new Paragraph("00.10% de "+nomina.getBaseEmpresario()).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell43.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell44 = new Cell();
@@ -314,7 +314,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell47.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell48 = new Cell();
-        cell48.add(new Paragraph(nomina.getIrpf()+"% de ").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell48.add(new Paragraph(nomina.getIrpf()+"% de "+nomina.getBrutoNomina()).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell48.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell49 = new Cell();
@@ -422,16 +422,8 @@ public class GeneracionPdf {
        
         
         Cell cell75 = new Cell();
-        cell75.add(new Paragraph("Desempleo 06,70%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
+        cell75.add(new Paragraph("Forma 06,70%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
         tabla5.addCell(cell75.setBorder(SolidBorder.NO_BORDER));
-        
-        Cell cell76 = new Cell();
-        cell76.add(new Paragraph(nomina.getDesempleoTrabajador()+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
-        tabla5.addCell(cell76.setBorder(SolidBorder.NO_BORDER));
-        
-        Cell cell77 = new Cell();
-        cell77.add(new Paragraph("Formación 00,60%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
-        tabla5.addCell(cell77.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell78 = new Cell();
         cell78.add(new Paragraph(nomina.getFormacionEmpresario()+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
@@ -468,7 +460,7 @@ public class GeneracionPdf {
         tabla5.addCell(cell85.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)).setBorderBottom(new SolidBorder(1)).setBorderLeft(new SolidBorder(1)));
         
         Cell cell86 = new Cell();
-        cell86.add(new Paragraph("Alggoo").setTextAlignment(TextAlignment.RIGHT).setFontSize(10).setFontColor(ColorConstants.RED));
+        cell86.add(new Paragraph(nomina.getCosteTotalEmpresario()+nomina.getBrutoNomina()+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10).setFontColor(ColorConstants.RED));
         tabla5.addCell(cell86.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)).setBorderBottom(new SolidBorder(1)).setBorderRight(new SolidBorder(1)));
         
 
