@@ -228,7 +228,7 @@ public class NominasLogica {
         }
         System.out.println(period.getYears() + " " + period.getMonths() + " " + period.getDays());
         if (numTrienios > 0) { // Con antiguedad
-            if (period.getYears() % 3 == 0 || ((period.getYears()-1)%3 == 0 ) && period.getMonths() == 0) { // Con cambio de trienios
+            if (period.getYears() % 3 == 0 || (period.getYears()-1)%3 == 0 && period.getMonths() == 0) { // Con cambio de trienios
                 int auxMonths = period.getMonths();
                 if(((period.getYears()-1)%3 == 0 ) && period.getMonths() == 0){// caso especial para cambio de trienios el 1 de enero
                     auxMonths = 12;
@@ -241,7 +241,7 @@ public class NominasLogica {
                         return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
                                 + (trienioAnterior * (13 - auxMonths)) + (importePorTrienios(numTrienios)/6d*7) + (importePorTrienios(numTrienios)/6d*5);
                     } else { // cambio posterior extra de junio
-                System.out.println("ENTRO AQUI");
+                        System.out.println("ENTRO AQUI");
                         return salarioBase + complementos + (importePorTrienios(numTrienios) * (auxMonths - 1))
                                 + (trienioAnterior * (13 - auxMonths)) + ((importePorTrienios(numTrienios)/6d)*7) + ((trienioAnterior/6d)*5);
                     }
@@ -256,8 +256,11 @@ public class NominasLogica {
                                 + trienioAnterior;
                     }
                 }
+            } else if((period.getYears()+1)%3 == 0 && period.getMonths() > 7 && isNominaProrrateada){ // Caso especial en que diciembre recibe la extra prorrateada con el trienio siguiente
+                System.out.println("NO ENTRO AQUI");
+                return salarioBase + complementos + (importePorTrienios(numTrienios) * (period.getMonths() -1))
+                                + (importePorTrienios(numTrienios) * (13 - period.getMonths())) + (importePorTrienios(numTrienios)/6d*11) + (importePorTrienios(numTrienios+1)/6d);
             } else { // Sin cambio de trienios
-                System.out.println("ENTRO AQUI");
                 return salarioBase + complementos + (importePorTrienios(numTrienios) * 14);
             }
         } else { // Sin antiguedad
