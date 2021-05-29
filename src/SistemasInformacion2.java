@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import modelo.AccesoExcel;
+import modelo.CategoriasDAO;
 import modelo.Empresas;
 import modelo.EmpresasDAO;
 import modelo.GeneracionPdf;
@@ -124,8 +125,16 @@ public class SistemasInformacion2 {
         //Obtenemos hashmap de categorias y trienios en accesoHoja1 y hashmap de irpf y cuotas en accesoHoja2
         ae.accesoHoja1();
         ae.accesoHoja2();
+        CategoriasDAO c=new CategoriasDAO();
+        for(int i=0;i<ae.getCat().size();i++){
+            c.add(ae.getCat().get(i));
+        }
         try {
             ArrayList<Trabajadorbbdd> atb = ae.accesoHoja3();
+            EmpresasDAO e=new EmpresasDAO();
+            for(int i=0;i<ae.getCat().size();i++){
+                e.add(ae.getEM().get(i));
+            }
             modEmail(atb);
             modDni(atb);
             modCCC(atb);
