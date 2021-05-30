@@ -97,12 +97,14 @@ public class bbddDAO {
         ListaTrabajadores = query.list();
         //System.out.println(ListaEmpresas.toString());
         //ArrayList<Categorias> c2 = new ArrayList<Categorias>();
+        int cap=ListaTrabajadores.size();
         existe=true;
         for(int i=0;i<t.size();i++){
             for(int j=0;j<ListaTrabajadores.size();j++){
                 if(t.get(i).getNifnie().equals(ListaTrabajadores.get(j).getNifnie()) && t.get(i).getNombre().equals(ListaTrabajadores.get(j).getNombre()) && t.get(i).getFechaAlta().equals(ListaTrabajadores.get(j).getFechaAlta()) && t.get(i).getEmpresas().getCif().equals(ListaTrabajadores.get(j).getEmpresas()
                 .getCif())  ){
                     existe=false;
+                    if(j<cap){
                     ListaTrabajadores.get(j).setApellido1(t.get(i).getApellido1());
                     ListaTrabajadores.get(j).setApellido2(t.get(i).getApellido2());
                     //ListaTrabajadores.get(i).setCategorias(tbd3.getCategorias());
@@ -128,6 +130,7 @@ public class bbddDAO {
                         ListaEmpresas.add(t.get(i).getEmpresas());
                     }
                     sesion.update(ListaTrabajadores.get(j));
+                    }
                 }
             }
             if(existe){
