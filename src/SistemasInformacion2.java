@@ -18,6 +18,7 @@ import modelo.NominaDAO;
 import modelo.Trabajadorbbdd;
 import modelo.TrabajadorbbddDAO;
 import modelo.XMLGenerator;
+import modelo.bbddDAO;
 /*
      * To change this license header, choose License Headers in Project Properties.
      * To change this template file, choose Tools | Templates
@@ -114,7 +115,7 @@ public class SistemasInformacion2 {
         sc.close();
         int mes = Integer.parseInt(fecha[0]);
         int anyo = Integer.parseInt(fecha[1]);
-        
+        ArrayList<Nomina> nomina=new ArrayList<Nomina>();
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, anyo);
         cal.set(Calendar.MONTH, mes);
@@ -125,16 +126,16 @@ public class SistemasInformacion2 {
         //Obtenemos hashmap de categorias y trienios en accesoHoja1 y hashmap de irpf y cuotas en accesoHoja2
         ae.accesoHoja1();
         ae.accesoHoja2();
-        CategoriasDAO c=new CategoriasDAO();
+        /*CategoriasDAO c=new CategoriasDAO();
         for(int i=0;i<ae.getCat().size();i++){
             c.add(ae.getCat().get(i));
-        }
+        }*/
         try {
             ArrayList<Trabajadorbbdd> atb = ae.accesoHoja3();
-            EmpresasDAO e=new EmpresasDAO();
+            /*EmpresasDAO e=new EmpresasDAO();
             for(int i=0;i<ae.getCat().size();i++){
                 e.add(ae.getEM().get(i));
-            }
+            }*/
             modEmail(atb);
             modDni(atb);
             modCCC(atb);
@@ -154,10 +155,15 @@ public class SistemasInformacion2 {
         
                     ArrayList<Nomina> lista = new ArrayList<Nomina>();
                     lista = n.getNominas();
+                    /*for(int j=0;j<lista.size();j++){
+                        
+                    }*/
                     for(int j=0; j<lista.size(); j++){
                         if(lista.get(j).getTrabajadorbbdd()!=null && j==1){
-                            gp.GeneracionPdfNominas(lista.get(j), true); 
+                            gp.GeneracionPdfNominas(lista.get(j), true);
+                            nomina.add(lista.get(j));
                         }else if(j==0){
+                            nomina.add(lista.get(j));
                             gp.GeneracionPdfNominas(lista.get(j), false);
                         }
                     }
@@ -165,7 +171,8 @@ public class SistemasInformacion2 {
                }
                
             }
-
+            //System.out.println("empresas:"+ae.getEM().size());
+            bbddDAO a=new bbddDAO(ae.getCat(),ae.getEM(),atb,nomina);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         } catch (Exception ex) {
