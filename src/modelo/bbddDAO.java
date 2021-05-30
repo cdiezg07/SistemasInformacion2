@@ -141,16 +141,16 @@ public class bbddDAO {
                             t.get(i).setCategorias(ListaCategorias.get(k));
                         }
                     }
-                boolean auxb=true;
+                boolean empresaErr=true;
                     for(int k=0;k<ListaEmpresas.size();k++){
                          //= t.get(i).getEmpresas().getCif().equals(ListaEmpresas.get(k).getCif());
                         if(t.get(i).getEmpresas().getCif().compareTo(ListaEmpresas.get(k).getCif())==0){
                             //System.out.println("e"+k+t.get(i).getEmpresas().getCif()+"/"+ListaEmpresas.get(k).getCif());
                             t.get(i).setEmpresas(ListaEmpresas.get(k));
-                            auxb=false;
+                            empresaErr=false;
                         }
                     }
-                    if(auxb){
+                    if(empresaErr){
                         sesion.save(t.get(i).getEmpresas());
                         ListaEmpresas.add(t.get(i).getEmpresas());
                     }
@@ -179,7 +179,7 @@ public class bbddDAO {
                         n.get(i).getTrabajadorbbdd().getNombre().equals(ListaNomina.get(j).getTrabajadorbbdd().getNombre()) &&
                         n.get(i).getTrabajadorbbdd().getFechaAlta().equals(ListaNomina.get(j).getTrabajadorbbdd().getFechaAlta())){
                     noExiste=false;
-                        boolean auxd=false;
+                        boolean actualizacion=false;
                 for(int k=0;k<ListaTrabajadores.size();k++){
                       
                     
@@ -189,7 +189,7 @@ public class bbddDAO {
                                 
                                 
                                 if(n.get(i).getTrabajadorbbdd().getFechaAlta().equals(ListaTrabajadores.get(k).getFechaAlta())){
-                                    auxd=true;
+                                    actualizacion=true;
                                     
                                     ListaNomina.get(j).setTrabajadorbbdd(ListaTrabajadores.get(k));
                                 }
@@ -198,7 +198,7 @@ public class bbddDAO {
                 }
                 }
 
-                if(auxd){
+                if(actualizacion){
                     ListaNomina.get(j).setAccidentesTrabajoEmpresario(n.get(i).getAccidentesTrabajoEmpresario());
                     ListaNomina.get(j).setBaseEmpresario(n.get(i).getBaseEmpresario());
                     ListaNomina.get(j).setCosteTotalEmpresario(n.get(i).getCosteTotalEmpresario());
@@ -230,10 +230,10 @@ public class bbddDAO {
             }
             
             if(noExiste){
-                boolean auxc=false;
+                
                 //System.out.println("10");
                 //boolean salir=true;
-                boolean auxd=false;
+                boolean sinTrabajador=false;
                 for(int k=0;k<ListaTrabajadores.size();k++){
                       
                     
@@ -243,7 +243,7 @@ public class bbddDAO {
                                 
                                 
                                 if(n.get(i).getTrabajadorbbdd().getFechaAlta().equals(ListaTrabajadores.get(k).getFechaAlta())){
-                                    auxd=true;
+                                    sinTrabajador=true;
                                     
                                     n.get(i).setTrabajadorbbdd(ListaTrabajadores.get(k));
                                 }
@@ -252,12 +252,12 @@ public class bbddDAO {
                 }
                 }
 
-                if(auxd){    
+                if(sinTrabajador){    
                 sesion.save(n.get(i));
                 //if(salir){
                 //System.out.println("1");
                 noExiste=true;
-                auxd=false;
+                sinTrabajador=false;
                 sesion.save(n.get(i));
                 
                 }
