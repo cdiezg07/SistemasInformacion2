@@ -53,18 +53,18 @@ public class bbddDAO {
         ListaCategorias = query.list();
         //System.out.println(ListaEmpresas.toString());
         //ArrayList<Categorias> c2 = new ArrayList<Categorias>();
-        boolean existe=true;
+        boolean noExiste=true;
         for(int i=0;i<c.size();i++){
             for(int j=0;j<ListaCategorias.size();j++){
                 if(c.get(i).getNombreCategoria().equals(ListaCategorias.get(j).getNombreCategoria())){
-                    existe=false;
+                    noExiste=false;
                     ListaCategorias.get(j).setSalarioBaseCategoria(c.get(i).getSalarioBaseCategoria());
                     ListaCategorias.get(j).setComplementoCategoria(c.get(i).getComplementoCategoria());
                     sesion.update(ListaCategorias.get(j));
                 }
             }
-            if(existe){
-                existe=true;
+            if(noExiste){
+                noExiste=true;
                 sesion.save(c.get(i));
                 ListaCategorias.add(c.get(i));
             }
@@ -74,17 +74,17 @@ public class bbddDAO {
         ListaEmpresas = query.list();
         //System.out.println(ListaEmpresas.toString());
         //ArrayList<Categorias> c2 = new ArrayList<Categorias>();
-        existe=true;
+        noExiste=true;
         for(int i=0;i<e.size();i++){
             for(int j=0;j<ListaEmpresas.size();j++){
                 if(e.get(i).getCif().equals(ListaEmpresas.get(j).getCif())){
-                    existe=false;
+                    noExiste=false;
                     ListaEmpresas.get(j).setNombre(e.get(i).getNombre());
                     sesion.update(ListaEmpresas.get(j));
                 }
             }
-            if(existe){
-                existe=true;
+            if(noExiste){
+                noExiste=true;
                 sesion.save(e.get(i));
                 ListaEmpresas.add(e.get(i));
             }
@@ -98,12 +98,12 @@ public class bbddDAO {
         //System.out.println(ListaEmpresas.toString());
         //ArrayList<Categorias> c2 = new ArrayList<Categorias>();
         int cap=ListaTrabajadores.size();
-        existe=true;
+        noExiste=true;
         for(int i=0;i<t.size();i++){
             for(int j=0;j<ListaTrabajadores.size();j++){
                 if(t.get(i).getNifnie().equals(ListaTrabajadores.get(j).getNifnie()) && t.get(i).getNombre().equals(ListaTrabajadores.get(j).getNombre()) && t.get(i).getFechaAlta().equals(ListaTrabajadores.get(j).getFechaAlta()) && t.get(i).getEmpresas().getCif().equals(ListaTrabajadores.get(j).getEmpresas()
                 .getCif())  ){
-                    existe=false;
+                    noExiste=false;
                     if(j<cap){
                     ListaTrabajadores.get(j).setApellido1(t.get(i).getApellido1());
                     ListaTrabajadores.get(j).setApellido2(t.get(i).getApellido2());
@@ -133,8 +133,8 @@ public class bbddDAO {
                     }
                 }
             }
-            if(existe){
-                existe=true;
+            if(noExiste){
+                noExiste=true;
                 for(int k=0;k<ListaCategorias.size();k++){
                         if(t.get(i).getCategorias().getNombreCategoria().compareTo(ListaCategorias.get(k).getNombreCategoria())==0){
                             //System.out.println("c"+k);
@@ -168,7 +168,7 @@ public class bbddDAO {
         consultaHQL = "FROM Nomina e";
         query = sesion.createQuery(consultaHQL);
         ListaNomina = query.list();
-        existe=true;
+        noExiste=true;
         for(int i=0;i<n.size();i++){
             for(int j=0;j<ListaNomina.size();j++){
                 if(n.get(i).getMes()==ListaNomina.get(j).getMes() &&  
@@ -178,7 +178,7 @@ public class bbddDAO {
                         n.get(i).getTrabajadorbbdd().getNifnie().equals(ListaNomina.get(j).getTrabajadorbbdd().getNifnie()) && 
                         n.get(i).getTrabajadorbbdd().getNombre().equals(ListaNomina.get(j).getTrabajadorbbdd().getNombre()) &&
                         n.get(i).getTrabajadorbbdd().getFechaAlta().equals(ListaNomina.get(j).getTrabajadorbbdd().getFechaAlta())){
-                    existe=false;
+                    noExiste=false;
                         boolean auxd=false;
                 for(int k=0;k<ListaTrabajadores.size();k++){
                       
@@ -229,7 +229,7 @@ public class bbddDAO {
                 
             }
             
-            if(existe){
+            if(noExiste){
                 boolean auxc=false;
                 //System.out.println("10");
                 //boolean salir=true;
@@ -256,7 +256,7 @@ public class bbddDAO {
                 sesion.save(n.get(i));
                 //if(salir){
                 //System.out.println("1");
-                existe=true;
+                noExiste=true;
                 auxd=false;
                 sesion.save(n.get(i));
                 
