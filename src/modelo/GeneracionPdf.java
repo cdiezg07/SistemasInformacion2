@@ -85,7 +85,7 @@ public class GeneracionPdf {
         cell2.setPadding(10);
         cell2.setTextAlignment(TextAlignment.RIGHT);
         cell2.add(new Paragraph("IBAN: " + tb.getIban()));
-        cell2.add(new Paragraph("Bruto anual: "+nomina.getBrutoAnual()));
+        cell2.add(new Paragraph("Bruto anual: "+String.format("%.2f",nomina.getBrutoAnual())));
         cell2.add(new Paragraph("Categoría: " + tb.getCategorias().getNombreCategoria()));
         //format de date to string, parse string to date
         cell2.add(new Paragraph("Fecha de alta: " + formatter1.format(tb.getFechaAlta())));
@@ -184,11 +184,11 @@ public class GeneracionPdf {
         tabla4.addCell(cell13.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell14 = new Cell();
-        cell14.add(new Paragraph(String.valueOf(df.format(nomina.getImporteSalarioMes()/30))).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell14.add(new Paragraph(String.valueOf(String.format("%.2f", nomina.getImporteSalarioMes()/30))).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell14.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell15 = new Cell();
-        cell15.add(new Paragraph(String.valueOf(df.format(nomina.getImporteSalarioMes()))).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell15.add(new Paragraph(String.valueOf(String.format("%.2f", nomina.getImporteSalarioMes()))).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell15.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell16 = new Cell();
@@ -204,11 +204,11 @@ public class GeneracionPdf {
         tabla4.addCell(cell18.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell19 = new Cell();
-        cell19.add(new Paragraph(String.valueOf(df.format(nomina.getValorProrrateo()/30))).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell19.add(new Paragraph(String.valueOf(String.format("%.2f", nomina.getValorProrrateo()/30))).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell19.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell20 = new Cell();
-        cell20.add(new Paragraph(String.valueOf(nomina.getValorProrrateo())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell20.add(new Paragraph(String.valueOf(String.format("%.2f", nomina.getValorProrrateo()))).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell20.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell21 = new Cell();
@@ -224,11 +224,11 @@ public class GeneracionPdf {
         tabla4.addCell(cell23.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell24 = new Cell();
-        cell24.add(new Paragraph(df.format(nomina.getImporteComplementoMes()/30)+"").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell24.add(new Paragraph(String.format("%.2f", nomina.getImporteComplementoMes()/30)+"").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell24.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell25 = new Cell();
-        cell25.add(new Paragraph(String.valueOf(nomina.getImporteComplementoMes())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell25.add(new Paragraph(String.format("%.2f", nomina.getImporteComplementoMes())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell25.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell26 = new Cell();
@@ -244,11 +244,15 @@ public class GeneracionPdf {
         tabla4.addCell(cell28.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell29 = new Cell();
-        cell29.add(new Paragraph(df.format(nomina.getImporteTrienios()/3)+"").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        if(nomina.getNumeroTrienios()==0){
+            cell29.add(new Paragraph("00,00").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        }else{
+            cell29.add(new Paragraph(String.format("%.2f", nomina.getImporteTrienios()/nomina.getNumeroTrienios())+"").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        }
         tabla4.addCell(cell29.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell230 = new Cell();
-        cell230.add(new Paragraph(nomina.getImporteTrienios()+"").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell230.add(new Paragraph(String.format("%.2f", nomina.getImporteTrienios())+"").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell230.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell31 = new Cell();
@@ -260,7 +264,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell32.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell33 = new Cell();
-        cell33.add(new Paragraph(df.format(nomina.getSeguridadSocialTrabajador())+"% de "+df.format(nomina.getBaseEmpresario())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell33.add(new Paragraph(String.format("%.2f",nomina.getSeguridadSocialTrabajador())+"% de "+String.format("%.2f",nomina.getBaseEmpresario())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell33.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell34 = new Cell();
@@ -272,7 +276,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell35.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell36 = new Cell();
-        cell36.add(new Paragraph(df.format(nomina.getImporteSeguridadSocialTrabajador())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell36.add(new Paragraph(String.format("%.2f",nomina.getImporteSeguridadSocialTrabajador())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla4.addCell(cell36.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell37 = new Cell();
@@ -280,7 +284,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell37.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell38 = new Cell();
-        cell38.add(new Paragraph(df.format(nomina.getDesempleoTrabajador())+"% de "+df.format(nomina.getBaseEmpresario())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell38.add(new Paragraph(String.format("%.2f",nomina.getDesempleoTrabajador())+"% de "+String.format("%.2f",nomina.getBaseEmpresario())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell38.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell39 = new Cell();
@@ -292,7 +296,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell40.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell41 = new Cell();
-        cell41.add(new Paragraph(df.format(nomina.getImporteDesempleoTrabajador())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell41.add(new Paragraph(String.format("%.2f",nomina.getImporteDesempleoTrabajador())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla4.addCell(cell41.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell42 = new Cell();
@@ -300,7 +304,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell42.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell43 = new Cell();
-        cell43.add(new Paragraph(df.format(nomina.getFormacionTrabajador())+"% de "+df.format(nomina.getBaseEmpresario())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell43.add(new Paragraph(String.format("%.2f",nomina.getFormacionTrabajador())+"% de "+String.format("%.2f",nomina.getBaseEmpresario())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell43.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell44 = new Cell();
@@ -312,7 +316,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell45.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell46 = new Cell();
-        cell46.add(new Paragraph(df.format(nomina.getImporteFormacionTrabajador())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell46.add(new Paragraph(String.format("%.2f",nomina.getImporteFormacionTrabajador())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla4.addCell(cell46.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell47 = new Cell();
@@ -320,7 +324,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell47.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell48 = new Cell();
-        cell48.add(new Paragraph(df.format(nomina.getIrpf())+"% de "+df.format(nomina.getBrutoNomina())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell48.add(new Paragraph(String.format("%.2f",nomina.getIrpf())+"% de "+String.format("%.2f",nomina.getBrutoNomina())).setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell48.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell49 = new Cell();
@@ -332,7 +336,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell50.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell51 = new Cell();
-        cell51.add(new Paragraph(df.format(nomina.getImporteIrpf())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell51.add(new Paragraph(String.format("%.2f",nomina.getImporteIrpf())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla4.addCell(cell51.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell52 = new Cell();
@@ -352,7 +356,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell55.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)));
         
         Cell cell56 = new Cell();
-        cell56.add(new Paragraph(df.format(nomina.getImporteIrpf()+nomina.getImporteSeguridadSocialTrabajador()+nomina.getFormacionTrabajador()+nomina.getImporteDesempleoTrabajador())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell56.add(new Paragraph(String.format("%.2f",nomina.getImporteIrpf()+nomina.getImporteSeguridadSocialTrabajador()+nomina.getFormacionTrabajador()+nomina.getImporteDesempleoTrabajador())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla4.addCell(cell56.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)));
         
         Cell cell57 = new Cell();
@@ -368,7 +372,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell59.setBorder(SolidBorder.NO_BORDER).setBorderBottom(new SolidBorder(1)));
         
         Cell cell60 = new Cell();
-        cell60.add(new Paragraph(df.format(nomina.getBrutoNomina())+"").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
+        cell60.add(new Paragraph(String.format("%.2f",nomina.getBrutoNomina())+"").setTextAlignment(TextAlignment.CENTER).setFontSize(10));
         tabla4.addCell(cell60.setBorder(SolidBorder.NO_BORDER).setBorderBottom(new SolidBorder(1)));
         
         Cell cell61 = new Cell();
@@ -392,7 +396,7 @@ public class GeneracionPdf {
         tabla4.addCell(cell65.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell66 = new Cell();
-        cell66.add(new Paragraph(df.format(nomina.getLiquidoNomina())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell66.add(new Paragraph(String.format("%.2f",nomina.getLiquidoNomina())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla4.addCell(cell66.setBorder(SolidBorder.NO_BORDER));
         
         
@@ -405,50 +409,50 @@ public class GeneracionPdf {
         tabla5.addCell(cell67.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)));
         
         Cell cell68 = new Cell();
-        cell68.add(new Paragraph(df.format(nomina.getBaseEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell68.add(new Paragraph(String.format("%.2f",nomina.getBaseEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla5.addCell(cell68.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)));
         
         Cell cell69 = new Cell();
         cell69.setPaddingTop(25);
-        cell69.add(new Paragraph("Contingencias comunes empresario "+df.format(nomina.getSeguridadSocialEmpresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
+        cell69.add(new Paragraph("Contingencias comunes empresario "+String.format("%.2f",nomina.getSeguridadSocialEmpresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
         tabla5.addCell(cell69.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)));
         
         Cell cell70 = new Cell();
         cell70.setPaddingTop(25);
-        cell70.add(new Paragraph(df.format(nomina.getImporteSeguridadSocialEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell70.add(new Paragraph(String.format("%.2f",nomina.getImporteSeguridadSocialEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla5.addCell(cell70.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)));
         
         Cell cell71 = new Cell();
-        cell71.add(new Paragraph("Desempleo "+df.format(nomina.getDesempleoEmpresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
+        cell71.add(new Paragraph("Desempleo "+String.format("%.2f",nomina.getDesempleoEmpresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
         tabla5.addCell(cell71.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell72 = new Cell();
-        cell72.add(new Paragraph(df.format(nomina.getImporteDesempleoEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell72.add(new Paragraph(String.format("%.2f",nomina.getImporteDesempleoEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla5.addCell(cell72.setBorder(SolidBorder.NO_BORDER));
        
         
         Cell cell75 = new Cell();
-        cell75.add(new Paragraph("Formación "+df.format(nomina.getFormacionEmpresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
+        cell75.add(new Paragraph("Formación "+String.format("%.2f",nomina.getFormacionEmpresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
         tabla5.addCell(cell75.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell78 = new Cell();
-        cell78.add(new Paragraph(df.format(nomina.getImporteFormacionEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell78.add(new Paragraph(String.format("%.2f",nomina.getImporteFormacionEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla5.addCell(cell78.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell79 = new Cell();
-        cell79.add(new Paragraph("Accidentes de trabajo "+df.format(nomina.getAccidentesTrabajoEmpresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
+        cell79.add(new Paragraph("Accidentes de trabajo "+String.format("%.2f",nomina.getAccidentesTrabajoEmpresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
         tabla5.addCell(cell79.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell80 = new Cell();
-        cell80.add(new Paragraph(df.format(nomina.getImporteAccidentesTrabajoEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell80.add(new Paragraph(String.format("%.2f",nomina.getImporteAccidentesTrabajoEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla5.addCell(cell80.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell81=  new Cell();
-        cell81.add(new Paragraph("FOGASA "+df.format(nomina.getFogasaempresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
+        cell81.add(new Paragraph("FOGASA "+String.format("%.2f",nomina.getFogasaempresario())+"%").setTextAlignment(TextAlignment.LEFT).setFontSize(10));
         tabla5.addCell(cell81.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell82 = new Cell();
-        cell82.add(new Paragraph(df.format(nomina.getImporteFogasaempresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell82.add(new Paragraph(String.format("%.2f",nomina.getImporteFogasaempresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla5.addCell(cell82.setBorder(SolidBorder.NO_BORDER));
         
         Cell cell83 = new Cell();
@@ -458,7 +462,7 @@ public class GeneracionPdf {
         
         Cell cell84 = new Cell();
         cell84.setPaddingBottom(20);
-        cell84.add(new Paragraph(df.format(nomina.getCosteTotalEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
+        cell84.add(new Paragraph(String.format("%.2f",nomina.getCosteTotalEmpresario())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10));
         tabla5.addCell(cell84.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)));
         
         Cell cell85 = new Cell();
@@ -466,7 +470,7 @@ public class GeneracionPdf {
         tabla5.addCell(cell85.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)).setBorderBottom(new SolidBorder(1)).setBorderLeft(new SolidBorder(1)));
         
         Cell cell86 = new Cell();
-        cell86.add(new Paragraph(df.format(nomina.getCosteTotalEmpresario()+nomina.getBrutoNomina())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10).setFontColor(ColorConstants.RED));
+        cell86.add(new Paragraph(String.format("%.2f",nomina.getCosteTotalEmpresario()+nomina.getBrutoNomina())+"").setTextAlignment(TextAlignment.RIGHT).setFontSize(10).setFontColor(ColorConstants.RED));
         tabla5.addCell(cell86.setBorder(SolidBorder.NO_BORDER).setBorderTop(new SolidBorder(1)).setBorderBottom(new SolidBorder(1)).setBorderRight(new SolidBorder(1)));
         
 

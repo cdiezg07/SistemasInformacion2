@@ -144,6 +144,9 @@ public class SistemasInformacion2 {
             GeneracionPdf gp = new GeneracionPdf();
             //Generacion Nominas
             for(int i=0; i<atb.size(); i++){     
+               if(atb.get(i).getNifnie().equals("")){
+                   atb.remove(i);
+               }
                Trabajadorbbdd tb = atb.get(i);
                LocalDate fa = tb.getFechaAlta().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                if(tb.getFechaAlta().compareTo(date) < 0){
