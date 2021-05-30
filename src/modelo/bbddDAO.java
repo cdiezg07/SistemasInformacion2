@@ -100,7 +100,8 @@ public class bbddDAO {
         existe=true;
         for(int i=0;i<t.size();i++){
             for(int j=0;j<ListaTrabajadores.size();j++){
-                if(t.get(i).getNifnie().equals(ListaTrabajadores.get(j).getNifnie()) && t.get(i).getNombre().equals(ListaTrabajadores.get(j).getNombre()) && t.get(i).getFechaAlta().equals(ListaTrabajadores.get(j).getFechaAlta())  ){
+                if(t.get(i).getNifnie().equals(ListaTrabajadores.get(j).getNifnie()) && t.get(i).getNombre().equals(ListaTrabajadores.get(j).getNombre()) && t.get(i).getFechaAlta().equals(ListaTrabajadores.get(j).getFechaAlta()) && t.get(i).getEmpresas().getCif().equals(ListaTrabajadores.get(j).getEmpresas()
+                .getCif())  ){
                     existe=false;
                     ListaTrabajadores.get(j).setApellido1(t.get(i).getApellido1());
                     ListaTrabajadores.get(j).setApellido2(t.get(i).getApellido2());
@@ -175,7 +176,51 @@ public class bbddDAO {
                         n.get(i).getTrabajadorbbdd().getNombre().equals(ListaNomina.get(j).getTrabajadorbbdd().getNombre()) &&
                         n.get(i).getTrabajadorbbdd().getFechaAlta().equals(ListaNomina.get(j).getTrabajadorbbdd().getFechaAlta())){
                     existe=false;
+                        boolean auxd=false;
+                for(int k=0;k<ListaTrabajadores.size();k++){
+                      
+                    
+                    if(n.get(i).getTrabajadorbbdd().getNifnie().equals(ListaTrabajadores.get(k).getNifnie() )){
+                            
+                            if(n.get(i).getTrabajadorbbdd().getNombre().equals(ListaTrabajadores.get(k).getNombre())){
+                                
+                                
+                                if(n.get(i).getTrabajadorbbdd().getFechaAlta().equals(ListaTrabajadores.get(k).getFechaAlta())){
+                                    auxd=true;
+                                    
+                                    ListaNomina.get(j).setTrabajadorbbdd(ListaTrabajadores.get(k));
+                                }
+                            }
+                         
+                }
+                }
+
+                if(auxd){
+                    ListaNomina.get(j).setAccidentesTrabajoEmpresario(n.get(i).getAccidentesTrabajoEmpresario());
+                    ListaNomina.get(j).setBaseEmpresario(n.get(i).getBaseEmpresario());
+                    ListaNomina.get(j).setCosteTotalEmpresario(n.get(i).getCosteTotalEmpresario());
+                    ListaNomina.get(j).setDesempleoEmpresario(n.get(i).getDesempleoEmpresario());
+                    ListaNomina.get(j).setDesempleoTrabajador(n.get(i).getDesempleoTrabajador());
+                    ListaNomina.get(j).setFogasaempresario(n.get(i).getFogasaempresario());
+                    ListaNomina.get(j).setFormacionEmpresario(n.get(i).getFormacionEmpresario());
+                    ListaNomina.get(j).setFormacionTrabajador(n.get(i).getFormacionTrabajador());
+                    ListaNomina.get(j).setImporteAccidentesTrabajoEmpresario(n.get(i).getImporteAccidentesTrabajoEmpresario());
+                    ListaNomina.get(j).setImporteComplementoMes(n.get(i).getImporteComplementoMes());
+                    ListaNomina.get(j).setImporteDesempleoEmpresario(n.get(i).getImporteDesempleoEmpresario());
+                    ListaNomina.get(j).setImporteDesempleoTrabajador(n.get(i).getImporteDesempleoTrabajador());
+                    ListaNomina.get(j).setImporteFogasaempresario(n.get(i).getImporteFogasaempresario());
+                    ListaNomina.get(j).setImporteFormacionEmpresario(n.get(i).getImporteFogasaempresario());
+                    ListaNomina.get(j).setImporteFormacionTrabajador(n.get(i).getImporteFormacionTrabajador());
+                    ListaNomina.get(j).setImporteTrienios(n.get(i).getImporteTrienios());
+                    ListaNomina.get(j).setImporteIrpf(n.get(i).getImporteIrpf());
+                    ListaNomina.get(j).setImporteSalarioMes(n.get(i).getImporteSalarioMes());
+                    ListaNomina.get(j).setNumeroTrienios(n.get(i).getNumeroTrienios());
+                    ListaNomina.get(j).setSeguridadSocialEmpresario(n.get(i).getSeguridadSocialEmpresario());
+                    ListaNomina.get(j).setSeguridadSocialTrabajador(n.get(i).getSeguridadSocialTrabajador());
+                    ListaNomina.get(j).setValorProrrateo(n.get(i).getValorProrrateo());
                     sesion.update(ListaNomina.get(j));
+                    //sesion.getTransaction().commit();
+                }
                 } 
                     
                 
@@ -192,11 +237,11 @@ public class bbddDAO {
                     if(n.get(i).getTrabajadorbbdd().getNifnie().equals(ListaTrabajadores.get(k).getNifnie() )){
                             
                             if(n.get(i).getTrabajadorbbdd().getNombre().equals(ListaTrabajadores.get(k).getNombre())){
-                                System.out.println("12");
+                                
                                 
                                 if(n.get(i).getTrabajadorbbdd().getFechaAlta().equals(ListaTrabajadores.get(k).getFechaAlta())){
                                     auxd=true;
-                                    System.out.println("c"+k);
+                                    
                                     n.get(i).setTrabajadorbbdd(ListaTrabajadores.get(k));
                                 }
                             }
@@ -220,10 +265,7 @@ public class bbddDAO {
         if (!sesion.getTransaction().wasCommitted())
                     sesion.getTransaction().commit();;
                 
-        //sesion.getTransaction().commit();
-        //sesion.close();
         
-       //System.out.println("lista:"+Lista.toString());
         HibernateUtil.shutdown();
 
     }
