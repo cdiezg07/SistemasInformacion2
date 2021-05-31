@@ -38,7 +38,7 @@ public class SistemasInformacion2 {
     public static void main(String[] args) throws FileNotFoundException, ParseException, IOException {
         // TODO code application logic here
 
-        Scanner leer = new Scanner(System.in);
+        //Scanner leer = new Scanner(System.in);
 
        
 //        System.out.println("Introduce un DNI: ");
@@ -126,27 +126,40 @@ public class SistemasInformacion2 {
         //Obtenemos hashmap de categorias y trienios en accesoHoja1 y hashmap de irpf y cuotas en accesoHoja2
         ae.accesoHoja1();
         ae.accesoHoja2();
-        /*CategoriasDAO c=new CategoriasDAO();
-        for(int i=0;i<ae.getCat().size();i++){
-            c.add(ae.getCat().get(i));
-        }*/
+        
         try {
             ArrayList<Trabajadorbbdd> atb = ae.accesoHoja3();
-            /*EmpresasDAO e=new EmpresasDAO();
-            for(int i=0;i<ae.getCat().size();i++){
-                e.add(ae.getEM().get(i));
-            }*/
+            
             modEmail(atb);
             modDni(atb);
             modCCC(atb);
             ae.cargarNuevosDatos(atb);
-            
+         
             GeneracionPdf gp = new GeneracionPdf();
+            
+            ArrayList<Trabajadorbbdd> atbBuenos = new ArrayList<Trabajadorbbdd>();
+            boolean correcto = true;
+            int j=0;
+            for(int i=0; i<atb.size(); i++){
+               correcto = true;
+                while(j<atbBuenos.size() && correcto){     
+                    if((atb.get(i).getNifnie().equals(atbBuenos.get(j).getNifnie()) && atb.get(i).getNombre().equals(atbBuenos.get(j).getNombre())
+                            && atb.get(i).getFechaAlta().equals(atbBuenos.get(j).getFechaAlta()) && atb.get(i).getEmpresas().getCif().equals(atbBuenos.get(j).getEmpresas().getCif()))){
+                    correcto = false;    
+                    }else{
+                        correcto = true;
+                    }
+                    j++;
+                }
+                j=0;
+                
+                if(correcto && !atb.get(i).getNifnie().equals("")){
+                    atbBuenos.add(atb.get(i));
+                }
+            }
+            atb = atbBuenos;
             //Generacion Nominas
-            for(int i=0; i<atb.size(); i++){     
-               if(atb.get(i).getNifnie().equals("")){
-                   atb.remove(i);
-               }
+            for(int i=0; i<atb.size(); i++){
                Trabajadorbbdd tb = atb.get(i);
                LocalDate fa = tb.getFechaAlta().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                if(tb.getFechaAlta().compareTo(date) < 0){
@@ -161,7 +174,7 @@ public class SistemasInformacion2 {
                     /*for(int j=0;j<lista.size();j++){
                         
                     }*/
-                    for(int j=0; j<lista.size(); j++){
+                    for(j=0; j<lista.size(); j++){
                         if(lista.get(j).getTrabajadorbbdd()!=null && j==1){
                             gp.GeneracionPdfNominas(lista.get(j), true);
                             nomina.add(lista.get(j));
@@ -174,7 +187,6 @@ public class SistemasInformacion2 {
                }
                
             }
-            //System.out.println("empresas:"+ae.getEM().size());
             bbddDAO a=new bbddDAO(ae.getCat(),ae.getEM(),atb,nomina);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());

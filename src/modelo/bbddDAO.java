@@ -51,8 +51,7 @@ public class bbddDAO {
         String consultaHQL = "FROM Categorias e";
         Query query = sesion.createQuery(consultaHQL);
         ListaCategorias = query.list();
-        //System.out.println(ListaEmpresas.toString());
-        //ArrayList<Categorias> c2 = new ArrayList<Categorias>();
+        
         boolean noExiste=true;
         for(int i=0;i<c.size();i++){
             for(int j=0;j<ListaCategorias.size();j++){
@@ -72,8 +71,7 @@ public class bbddDAO {
         consultaHQL = "FROM Empresas e";
         query = sesion.createQuery(consultaHQL);
         ListaEmpresas = query.list();
-        //System.out.println(ListaEmpresas.toString());
-        //ArrayList<Categorias> c2 = new ArrayList<Categorias>();
+        
         noExiste=true;
         for(int i=0;i<e.size();i++){
             for(int j=0;j<ListaEmpresas.size();j++){
@@ -89,9 +87,8 @@ public class bbddDAO {
                 ListaEmpresas.add(e.get(i));
             }
         }
-        /*consultaHQL = "FROM Empresas e";
-        query = sesion.createQuery(consultaHQL);
-        ListaEmpresas = query.list();*/
+        
+        
         consultaHQL = "FROM Trabajadorbbdd e";
         query = sesion.createQuery(consultaHQL);
         ListaTrabajadores = query.list();
@@ -107,10 +104,8 @@ public class bbddDAO {
                     if(j<cap){
                     ListaTrabajadores.get(j).setApellido1(t.get(i).getApellido1());
                     ListaTrabajadores.get(j).setApellido2(t.get(i).getApellido2());
-                    //ListaTrabajadores.get(i).setCategorias(tbd3.getCategorias());
                     ListaTrabajadores.get(j).setCodigoCuenta(t.get(i).getCodigoCuenta());
                     ListaTrabajadores.get(j).setEmail(t.get(i).getEmail());
-                    //tbd2.get(i).setEmpresas(tbd3.getEmpresas());
                     ListaTrabajadores.get(j).setIban(t.get(i).getIban());
                     ListaTrabajadores.get(j).setNominas(t.get(i).getNominas());
                     for(int k=0;k<ListaCategorias.size();k++){
@@ -222,7 +217,6 @@ public class bbddDAO {
                     ListaNomina.get(j).setSeguridadSocialTrabajador(n.get(i).getSeguridadSocialTrabajador());
                     ListaNomina.get(j).setValorProrrateo(n.get(i).getValorProrrateo());
                     sesion.update(ListaNomina.get(j));
-                    //sesion.getTransaction().commit();
                 }
                 } 
                     
@@ -231,8 +225,7 @@ public class bbddDAO {
             
             if(noExiste){
                 
-                //System.out.println("10");
-                //boolean salir=true;
+                
                 boolean sinTrabajador=false;
                 for(int k=0;k<ListaTrabajadores.size();k++){
                       
@@ -254,8 +247,7 @@ public class bbddDAO {
 
                 if(sinTrabajador){    
                 sesion.save(n.get(i));
-                //if(salir){
-                //System.out.println("1");
+                
                 noExiste=true;
                 sinTrabajador=false;
                 sesion.save(n.get(i));
